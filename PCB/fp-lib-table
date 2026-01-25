@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "EC12E24204A9")(type "KiCad")(uri "${KIPRJMOD}/lib/encoder/EC12E24204A9.pretty")(options "")(descr ""))
+)
