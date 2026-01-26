@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.ino": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp"
+    }
+}

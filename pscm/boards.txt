@@ -1,0 +1,14 @@
+## Arduino Mini w/ ATmega168pa
+## -------------------------
+mini.menu.cpu.atmega168pa=ATmega168pa
+
+mini.menu.cpu.atmega168pa.upload.maximum_size=14336
+mini.menu.cpu.atmega168pa.upload.maximum_data_size=1024
+mini.menu.cpu.atmega168pa.upload.speed=19200
+
+mini.menu.cpu.atmega168pa.bootloader.high_fuses=0xdd
+mini.menu.cpu.atmega168pa.bootloader.extended_fuses=0xF8
+mini.menu.cpu.atmega168pa.bootloader.file=atmega/ATmegaBOOT_168_ng.hex
+
+mini.menu.cpu.atmega168pa.build.mcu=atmega168pa
+mini.menu.cpu.atmega168pa.build.f_cpu=16000000L
