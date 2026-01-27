@@ -41,4 +41,5 @@ fp-info-cache
 *.kicad_prl
 
 #### Other
-build\
+build/
+.venv/
