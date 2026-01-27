@@ -1,0 +1,150 @@
+(footprint "USB_A_Molex_105057_Vertical"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(descr "https://www.molex.com/pdm_docs/sd/1050570001_sd.pdf")
+	(tags "USB A Vertical")
+	(property "Reference" "J7"
+		(at 0 2.35 0)
+		(layer "F.SilkS")
+		(uuid "37a15e7e-f79d-4c5c-82db-2b8466520985")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "USB_A"
+		(at 0 2.3 0)
+		(layer "F.Fab")
+		(uuid "2da56d65-6d3b-4ce5-8abe-4a8659eb1a09")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" "~"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "85c34f2a-dca4-4a2d-9753-8e2b60aa4cd8")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" "USB Type A connector"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "c332d7db-a0ae-4e45-b5df-9c3fde1d3b07")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_rect
+		(start -6.6 -2.15)
+		(end 6.6 3.6)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.SilkS")
+		(uuid "5e3e0e80-6447-4c1f-b3b4-8fb247e6081d")
+	)
+	(fp_rect
+		(start -8 -2.95)
+		(end 8 4.05)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "0cf909c9-997a-467d-89e6-c459d0259e5d")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 -3.9 0)
+		(layer "F.Fab")
+		(uuid "e1b29096-e12a-4835-aa97-792ebd4f85e6")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" thru_hole rect
+		(at -3.4 0)
+		(size 1.3 1.3)
+		(drill 0.9)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "8477aa4a-4788-4948-98ce-dff154e541a9")
+	)
+	(pad "2" thru_hole circle
+		(at -0.9 0)
+		(size 1.3 1.3)
+		(drill 0.9)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "38d56bfa-8889-4d23-9acd-29431ed99f92")
+	)
+	(pad "3" thru_hole circle
+		(at 0.9 0)
+		(size 1.3 1.3)
+		(drill 0.9)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "4d4018ca-da88-4a84-a1a0-87c18d6f4be3")
+	)
+	(pad "4" thru_hole circle
+		(at 3.4 0)
+		(size 1.3 1.3)
+		(drill 0.9)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "045ef4f4-db9b-4084-ab12-5935c027f923")
+	)
+	(pad "5" thru_hole oval
+		(at -6.6 2 180)
+		(size 1.9 2.9)
+		(drill oval 1.3 2.3)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "e703cdbf-2964-40f8-94aa-be0b9e9c0b2d")
+	)
+	(pad "5" thru_hole oval
+		(at 6.6 2)
+		(size 1.9 2.9)
+		(drill oval 1.3 2.3)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "8e3009fd-93a6-442c-bb2d-12130db4162a")
+	)
+	(embedded_fonts no)
+	(model "${KICAD9_3DMODEL_DIR}/Connector_USB.3dshapes/USB_A_Molex_105057_Vertical.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)

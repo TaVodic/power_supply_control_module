@@ -4105,18 +4105,6 @@
 		)
 		(uuid 68bf86d8-9f9f-456d-80f5-06c5e1f19918)
 	)
-	(text "TODO:\nDesign USB PCB"
-		(exclude_from_sim no)
-		(at 134.62 178.054 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(color 255 0 3 1)
-			)
-			(justify left)
-		)
-		(uuid "03139d8c-401d-4644-8c67-aa00fae21cad")
-	)
 	(text "PCINT13"
 		(exclude_from_sim no)
 		(at 109.728 108.204 0)
@@ -5080,7 +5068,7 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 177.8) (xy 43.18 185.42)
+			(xy 36.83 177.8) (xy 36.83 185.42)
 		)
 		(stroke
 			(width 0)
@@ -5530,16 +5518,6 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 185.42) (xy 27.94 185.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bb812c08-7553-4e1a-9baa-855364a9c700")
-	)
-	(wire
-		(pts
 			(xy 182.88 45.72) (xy 182.88 48.26)
 		)
 		(stroke
@@ -5720,7 +5698,7 @@
 	)
 	(wire
 		(pts
-			(xy 49.53 177.8) (xy 43.18 177.8)
+			(xy 36.83 177.8) (xy 49.53 177.8)
 		)
 		(stroke
 			(width 0)
@@ -5847,6 +5825,16 @@
 			(type default)
 		)
 		(uuid "e4940b14-2819-42e0-bba1-2f2e9295a732")
+	)
+	(wire
+		(pts
+			(xy 27.94 185.42) (xy 36.83 185.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e565936d-a991-4237-aa7f-8aab6294fc6e")
 	)
 	(wire
 		(pts
@@ -5988,6 +5976,16 @@
 		)
 		(uuid "fea89bb7-7d7d-4a35-b7ff-1dd366613bfa")
 	)
+	(label "GND_USB"
+		(at 48.26 177.8 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "05738b8a-bf63-41ea-9a49-8f92f0061c07")
+	)
 	(label "MISO"
 		(at 71.12 46.99 180)
 		(effects
@@ -5997,6 +5995,16 @@
 			(justify right bottom)
 		)
 		(uuid "0a247aa5-7b59-4e98-b4c5-88fa950998d9")
+	)
+	(label "D-"
+		(at 48.26 175.26 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "186b23c9-8e7d-4b6a-be2f-7113804e1b5b")
 	)
 	(label "MOSI"
 		(at 170.18 110.49 0)
@@ -6157,6 +6165,16 @@
 			(justify right bottom)
 		)
 		(uuid "5e937e77-b53c-42f6-8317-9a98dcf159fa")
+	)
+	(label "D+"
+		(at 48.26 172.72 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "5fa524dc-38b8-498f-be77-78fbbd4ab5b1")
 	)
 	(label "_POT_V"
 		(at 252.73 110.49 180)
@@ -7970,7 +7988,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "lib:mouse-bite-2mm-slot"
+		(property "Footprint" "lib:mouse-bite-3mm-slot-jlcpcb"
 			(at 257.81 156.21 0)
 			(effects
 				(font
@@ -8901,7 +8919,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_USB:USB_A_Molex_105057_Vertical"
+		(property "Footprint" "USB_A:USB_A_Molex_105057_Vertical"
 			(at 31.75 173.99 0)
 			(effects
 				(font

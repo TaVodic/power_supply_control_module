@@ -3,4 +3,5 @@
   (lib (name "EC12E24204A9")(type "KiCad")(uri "${KIPRJMOD}/lib/encoder/EC12E24204A9.pretty")(options "")(descr ""))
   (lib (name "EDAC")(type "KiCad")(uri "${KIPRJMOD}/lib/connectors/EDAC.pretty")(options "")(descr ""))
   (lib (name "lib")(type "KiCad")(uri "${KIPRJMOD}/lib")(options "")(descr ""))
+  (lib (name "USB_A")(type "KiCad")(uri "${KIPRJMOD}/lib/USB_A.pretty")(options "")(descr ""))
 )
