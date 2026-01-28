@@ -100,9 +100,9 @@
 (rule "Min. Trace width (4-6 Layers)"
 	(constraint track_width (min 0.09mm))
 )
-(rule "Min. Spacing (4-6 Layers)"
-	(constraint clearance (min 0.09mm))
-)
+#(rule "Min. Spacing (4-6 Layers)"
+#	(constraint clearance (min 0.09mm))
+#)
 
 #(rule "Min. Trace width (2oz Copper Weight)"
 #	(constraint track_width (min 0.2mm))

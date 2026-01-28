@@ -229,10 +229,6 @@
         {
           "diameter": 0.56,
           "drill": 0.3
-        },
-        {
-          "diameter": 0.66,
-          "drill": 0.4
         }
       ],
       "zones_allow_external_fillets": true
@@ -668,9 +664,9 @@
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "priority": 0,
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.4,
-        "via_diameter": 0.66,
-        "via_drill": 0.4,
+        "track_width": 0.3,
+        "via_diameter": 0.56,
+        "via_drill": 0.3,
         "wire_width": 6
       },
       {
@@ -696,7 +692,16 @@
     },
     "net_colors": null,
     "netclass_assignments": null,
-    "netclass_patterns": []
+    "netclass_patterns": [
+      {
+        "netclass": "Power",
+        "pattern": "GNDD"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "VCC"
+      }
+    ]
   },
   "pcbnew": {
     "last_paths": {

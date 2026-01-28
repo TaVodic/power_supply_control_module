@@ -6087,7 +6087,7 @@
 		(uuid "37878e84-a14b-48d3-8ddc-843d99ca0333")
 	)
 	(label "~{MCP_CS2}"
-		(at 71.12 39.37 180)
+		(at 71.12 41.91 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6267,7 +6267,7 @@
 		(uuid "bdeadfd4-4a63-4e00-aef8-565d992d7c95")
 	)
 	(label "~{MCP_CS1}"
-		(at 71.12 41.91 180)
+		(at 71.12 39.37 180)
 		(effects
 			(font
 				(size 1.27 1.27)
