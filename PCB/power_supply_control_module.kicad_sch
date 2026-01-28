@@ -6,7 +6,7 @@
 	(paper "A4")
 	(title_block
 		(title "Laboratory power supply control module")
-		(date "2026-01-26")
+		(date "2026-01-28")
 		(rev "v1.0.0")
 		(company "Design by: Martin Tavoda")
 	)
@@ -1734,23 +1734,25 @@
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "SW"
-				(at 0 6.604 0)
+			(property "Reference" "SW4"
+				(at 6.35 1.2701 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Value" "RotaryEncoder"
-				(at 0 -6.604 0)
+			(property "Value" "Current"
+				(at 6.35 -1.2699 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "Rotary_Encoder:RotaryEncoder_Alps_EC12E_Vertical_H20mm"
 				(at -3.81 4.064 0)
 				(effects
 					(font
@@ -1759,7 +1761,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "~"
+			(property "Datasheet" "https://www.tme.eu/Document/342007a70038033a337cedffe33475e7/ALPS_EC12E_D.PDF"
 				(at 0 6.604 0)
 				(effects
 					(font
@@ -1769,6 +1771,15 @@
 				)
 			)
 			(property "Description" "Rotary encoder, dual channel, incremental quadrate outputs"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Field5" ""
 				(at 0 0 0)
 				(effects
 					(font
@@ -2005,10 +2016,28 @@
 						)
 					)
 				)
+				(pin passive line
+					(at 0 -8.89 90)
+					(length 3.81)
+					(name "MP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "MP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 			)
 			(embedded_fonts no)
 		)
-		(symbol "MCU_Microchip_ATmega:ATmega328P-A"
+		(symbol "MCU_Microchip_ATmega:ATmega328PB-A"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -2021,7 +2050,7 @@
 					(justify left bottom)
 				)
 			)
-			(property "Value" "ATmega328P-A"
+			(property "Value" "ATmega328PB-A"
 				(at 2.54 -36.83 0)
 				(effects
 					(font
@@ -2040,7 +2069,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "http://ww1.microchip.com/downloads/en/DeviceDoc/ATmega328_P%20AVR%20MCU%20with%20picoPower%20Technology%20Data%20Sheet%2040001984A.pdf"
+			(property "Datasheet" "http://ww1.microchip.com/downloads/en/DeviceDoc/40001906C.pdf"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2058,7 +2087,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "AVR 8bit Microcontroller MegaAVR PicoPower"
+			(property "ki_keywords" "AVR 8bit Microcontroller MegaAVR"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2076,7 +2105,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "ATmega328P-A_0_1"
+			(symbol "ATmega328PB-A_0_1"
 				(rectangle
 					(start -12.7 -35.56)
 					(end 12.7 35.56)
@@ -2089,7 +2118,7 @@
 					)
 				)
 			)
-			(symbol "ATmega328P-A_1_1"
+			(symbol "ATmega328PB-A_1_1"
 				(pin passive line
 					(at -15.24 30.48 0)
 					(length 2.54)
@@ -2108,10 +2137,46 @@
 						)
 					)
 				)
-				(pin input line
-					(at -15.24 25.4 0)
+				(pin bidirectional line
+					(at -15.24 -12.7 0)
 					(length 2.54)
-					(name "ADC6"
+					(name "PE0"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at -15.24 -15.24 0)
+					(length 2.54)
+					(name "PE1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at -15.24 -17.78 0)
+					(length 2.54)
+					(name "PE2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2126,10 +2191,10 @@
 						)
 					)
 				)
-				(pin input line
-					(at -15.24 22.86 0)
+				(pin bidirectional line
+					(at -15.24 -20.32 0)
 					(length 2.54)
-					(name "ADC7"
+					(name "PE3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2163,25 +2228,6 @@
 					)
 				)
 				(pin passive line
-					(at 0 38.1 270)
-					(length 2.54)
-					(hide yes)
-					(name "VCC"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
 					(at 0 -38.1 90)
 					(length 2.54)
 					(hide yes)
@@ -2203,25 +2249,6 @@
 				(pin power_in line
 					(at 0 -38.1 90)
 					(length 2.54)
-					(name "GND"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -38.1 90)
-					(length 2.54)
-					(hide yes)
 					(name "GND"
 						(effects
 							(font
@@ -3491,6 +3518,317 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "RotaryEncoder_1"
+			(pin_names
+				(offset 0.254)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "SW3"
+				(at 6.35 1.2701 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "Voltage"
+				(at 6.35 -1.2699 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Rotary_Encoder:RotaryEncoder_Alps_EC12E_Vertical_H20mm"
+				(at -3.81 4.064 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.tme.eu/Document/342007a70038033a337cedffe33475e7/ALPS_EC12E_D.PDF"
+				(at 0 6.604 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Rotary encoder, dual channel, incremental quadrate outputs"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Field5" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "rotary switch encoder"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "RotaryEncoder*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "RotaryEncoder_1_0_1"
+				(rectangle
+					(start -5.08 5.08)
+					(end 5.08 -5.08)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 2.54) (xy -3.81 2.54) (xy -3.81 2.032)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 0) (xy -3.81 0) (xy -3.81 -1.016) (xy -3.302 -2.032)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 -2.54) (xy -3.81 -2.54) (xy -3.81 -2.032)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -4.318 0) (xy -3.81 0) (xy -3.81 1.016) (xy -3.302 2.032)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -3.81 0)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.635 -1.778) (xy -0.635 1.778)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -0.381 0)
+					(radius 1.905)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.381 -1.778) (xy -0.381 1.778)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -0.381 -2.794)
+					(mid -3.0988 -0.0635)
+					(end -0.381 2.667)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.127 1.778) (xy -0.127 -1.778)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.254 2.921) (xy -0.508 2.667) (xy 0.127 2.286)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.254 -3.048) (xy -0.508 -2.794) (xy 0.127 -2.413)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "RotaryEncoder_1_1_1"
+				(pin passive line
+					(at -7.62 2.54 0)
+					(length 2.54)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -7.62 0 0)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -7.62 -2.54 0)
+					(length 2.54)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -8.89 90)
+					(length 3.81)
+					(name "MP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "MP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Switch:SW_Push"
 			(pin_numbers
 				(hide yes)
@@ -4105,16 +4443,6 @@
 		)
 		(uuid 68bf86d8-9f9f-456d-80f5-06c5e1f19918)
 	)
-	(text "PCINT13"
-		(exclude_from_sim no)
-		(at 109.728 108.204 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "323cd6a2-653a-4ba5-afae-c901362adaaf")
-	)
 	(text "Using internal pull-ups.\nR=~3k"
 		(exclude_from_sim no)
 		(at 178.562 72.644 0)
@@ -4146,16 +4474,6 @@
 		)
 		(uuid "5f318291-3a6d-4e15-b96a-6933c478382b")
 	)
-	(text "PCINT12"
-		(exclude_from_sim no)
-		(at 109.728 98.298 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "67a7fe4e-691e-44a6-8f6e-5d04b13b7a3e")
-	)
 	(text "NOTES:\nTo disable second DPOT:\n> short-circuit R2, R6\n> remove R10, R11\n\nInterconnection of digital pots and pinout of PS_POT conn is\nbased on original power supply circuit."
 		(exclude_from_sim no)
 		(at 283.21 173.736 0)
@@ -4169,7 +4487,7 @@
 	)
 	(text "Using internal pull-ups."
 		(exclude_from_sim no)
-		(at 89.662 147.828 0)
+		(at 116.078 129.794 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4186,6 +4504,16 @@
 			)
 		)
 		(uuid "8a0de0c9-2953-43fc-a041-5526c77a72f4")
+	)
+	(text "16MHz\n"
+		(exclude_from_sim no)
+		(at 139.446 46.228 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "8bff0880-c3c1-48d6-af4e-20dffb7c677e")
 	)
 	(text "Pull-up to disconnect\nSPI on boot-up"
 		(exclude_from_sim no)
@@ -4319,7 +4647,7 @@
 		(uuid "ac5f08ea-8013-47d8-9c5e-bd98ca34a1c6")
 	)
 	(junction
-		(at 88.9 135.89)
+		(at 88.9 138.43)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b671cd4c-0242-488d-863d-71cfd52e97f0")
@@ -4389,12 +4717,24 @@
 		(uuid "a7b3b064-304f-4446-b21a-edcf6478c1a8")
 	)
 	(no_connect
+		(at 30.48 87.63)
+		(uuid "adc67ad6-6b92-4b02-ac92-19c6d961c94b")
+	)
+	(no_connect
+		(at 30.48 82.55)
+		(uuid "b180a8b8-e78f-47c0-9af4-2c772bc4e843")
+	)
+	(no_connect
 		(at 193.04 73.66)
 		(uuid "b3e17689-249a-4e97-bbf4-935f92e059ec")
 	)
 	(no_connect
 		(at 193.04 118.11)
 		(uuid "cfd81fa4-7851-48be-94a9-786846836902")
+	)
+	(no_connect
+		(at 30.48 80.01)
+		(uuid "d15fd219-e57d-4c1c-a834-78ec27b7cda3")
 	)
 	(no_connect
 		(at 60.96 62.23)
@@ -4405,12 +4745,8 @@
 		(uuid "e034e646-9b3d-4282-8162-d095be11aae2")
 	)
 	(no_connect
-		(at 30.48 41.91)
-		(uuid "e0abc788-ece8-4c33-a286-49617a8ab056")
-	)
-	(no_connect
-		(at 30.48 44.45)
-		(uuid "eab65c3a-378b-4981-816d-59e0a133316c")
+		(at 30.48 85.09)
+		(uuid "e8ce9063-3935-42f5-b808-8020057d2a29")
 	)
 	(no_connect
 		(at 193.04 120.65)
@@ -4568,7 +4904,7 @@
 	)
 	(wire
 		(pts
-			(xy 88.9 120.65) (xy 88.9 135.89)
+			(xy 88.9 120.65) (xy 88.9 138.43)
 		)
 		(stroke
 			(width 0)
@@ -4588,7 +4924,7 @@
 	)
 	(wire
 		(pts
-			(xy 153.67 29.21) (xy 152.4 29.21)
+			(xy 154.94 29.21) (xy 157.48 29.21)
 		)
 		(stroke
 			(width 0)
@@ -4598,7 +4934,7 @@
 	)
 	(wire
 		(pts
-			(xy 73.66 138.43) (xy 73.66 97.79)
+			(xy 73.66 140.97) (xy 73.66 97.79)
 		)
 		(stroke
 			(width 0)
@@ -4615,16 +4951,6 @@
 			(type default)
 		)
 		(uuid "261e41f6-3f3e-4990-a085-413d3bd56e82")
-	)
-	(wire
-		(pts
-			(xy 254 115.57) (xy 242.57 115.57)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "264e57ba-6164-4e5a-aaa1-f4c4042d1f19")
 	)
 	(wire
 		(pts
@@ -4645,16 +4971,6 @@
 			(type default)
 		)
 		(uuid "275e214a-df1a-4576-b1a3-dd062baba23a")
-	)
-	(wire
-		(pts
-			(xy 152.4 31.75) (xy 152.4 35.56)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "28742b3b-0343-47df-ab4d-bfd7ac897257")
 	)
 	(wire
 		(pts
@@ -4685,6 +5001,16 @@
 			(type default)
 		)
 		(uuid "29fd5133-574e-4398-a3c3-2e70240160a6")
+	)
+	(wire
+		(pts
+			(xy 154.94 31.75) (xy 157.48 31.75)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2a8c8785-de50-4310-ba68-2f58b45747cb")
 	)
 	(wire
 		(pts
@@ -4968,7 +5294,7 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 138.43) (xy 73.66 138.43)
+			(xy 90.17 140.97) (xy 73.66 140.97)
 		)
 		(stroke
 			(width 0)
@@ -5108,6 +5434,16 @@
 	)
 	(wire
 		(pts
+			(xy 154.94 31.75) (xy 154.94 35.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "73531cf1-45c7-4904-a906-5ba661c31c13")
+	)
+	(wire
+		(pts
 			(xy 60.96 52.07) (xy 144.78 52.07)
 		)
 		(stroke
@@ -5178,7 +5514,7 @@
 	)
 	(wire
 		(pts
-			(xy 76.2 95.25) (xy 76.2 133.35)
+			(xy 76.2 95.25) (xy 76.2 135.89)
 		)
 		(stroke
 			(width 0)
@@ -5258,7 +5594,7 @@
 	)
 	(wire
 		(pts
-			(xy 76.2 133.35) (xy 90.17 133.35)
+			(xy 76.2 135.89) (xy 90.17 135.89)
 		)
 		(stroke
 			(width 0)
@@ -5328,6 +5664,16 @@
 	)
 	(wire
 		(pts
+			(xy 242.57 115.57) (xy 254 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "94510063-efa0-4245-84ed-02e313d8b7fc")
+	)
+	(wire
+		(pts
 			(xy 224.79 73.66) (xy 224.79 71.12)
 		)
 		(stroke
@@ -5378,7 +5724,7 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 135.89) (xy 88.9 135.89)
+			(xy 90.17 138.43) (xy 88.9 138.43)
 		)
 		(stroke
 			(width 0)
@@ -5545,16 +5891,6 @@
 			(type default)
 		)
 		(uuid "c058fb80-d38b-4b7a-9120-ee31d5d7e4ad")
-	)
-	(wire
-		(pts
-			(xy 153.67 31.75) (xy 152.4 31.75)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c12742ab-4265-4057-afb3-4acaaab679a4")
 	)
 	(wire
 		(pts
@@ -5728,7 +6064,7 @@
 	)
 	(wire
 		(pts
-			(xy 88.9 135.89) (xy 88.9 142.24)
+			(xy 88.9 138.43) (xy 88.9 147.32)
 		)
 		(stroke
 			(width 0)
@@ -5868,7 +6204,7 @@
 	)
 	(wire
 		(pts
-			(xy 152.4 29.21) (xy 152.4 27.94)
+			(xy 154.94 29.21) (xy 154.94 27.94)
 		)
 		(stroke
 			(width 0)
@@ -6045,16 +6381,6 @@
 			(justify left bottom)
 		)
 		(uuid "2aa830f0-4510-49f0-9bee-ffd7e2109181")
-	)
-	(label "DIN"
-		(at 106.68 87.63 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "2f595a7a-f00a-47f3-8ebc-b337b8dbb0d1")
 	)
 	(label "MOSI"
 		(at 146.05 31.75 180)
@@ -6256,16 +6582,6 @@
 		)
 		(uuid "b08fa622-a791-44bf-b1fb-889853408998")
 	)
-	(label "CLK"
-		(at 106.68 85.09 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "bdeadfd4-4a63-4e00-aef8-565d992d7c95")
-	)
 	(label "~{MCP_CS1}"
 		(at 71.12 39.37 180)
 		(effects
@@ -6296,7 +6612,7 @@
 		)
 		(uuid "d32ba939-438d-409b-b162-22e43f3baed8")
 	)
-	(label "DIN"
+	(label "DISP_DIN"
 		(at 63.5 87.63 0)
 		(effects
 			(font
@@ -6306,7 +6622,7 @@
 		)
 		(uuid "e964e5e4-b129-4ffb-a839-bfa0785a7ebc")
 	)
-	(label "CLK"
+	(label "DISP_CLK"
 		(at 63.5 85.09 0)
 		(effects
 			(font
@@ -6781,7 +7097,7 @@
 	)
 	(symbol
 		(lib_id "Device:RotaryEncoder")
-		(at 97.79 135.89 0)
+		(at 97.79 138.43 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6790,15 +7106,6 @@
 		(fields_autoplaced yes)
 		(uuid "09c2b5a2-0d84-48ae-83cd-ddb0bedb74a3")
 		(property "Reference" "SW4"
-			(at 104.14 134.6199 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Current"
 			(at 104.14 137.1599 0)
 			(effects
 				(font
@@ -6807,8 +7114,17 @@
 				(justify left)
 			)
 		)
+		(property "Value" "Current"
+			(at 104.14 139.6999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
 		(property "Footprint" "Rotary_Encoder:RotaryEncoder_Alps_EC12E_Vertical_H20mm"
-			(at 93.98 131.826 0)
+			(at 93.98 134.366 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6817,7 +7133,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.tme.eu/Document/342007a70038033a337cedffe33475e7/ALPS_EC12E_D.PDF"
-			(at 97.79 129.286 0)
+			(at 97.79 131.826 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6826,7 +7142,7 @@
 			)
 		)
 		(property "Description" "Rotary encoder, dual channel, incremental quadrate outputs"
-			(at 97.79 135.89 0)
+			(at 97.79 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6835,7 +7151,7 @@
 			)
 		)
 		(property "Field5" ""
-			(at 97.79 135.89 0)
+			(at 97.79 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6851,6 +7167,9 @@
 		)
 		(pin "B"
 			(uuid "d3054679-aebc-4532-9d0d-1d4b6652c082")
+		)
+		(pin "MP"
+			(uuid "4737babe-f2d6-4933-83ad-6cf0834f9b6d")
 		)
 		(instances
 			(project "power_supply_control_module"
@@ -7012,7 +7331,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Display"
+		(property "Value" "DISP"
 			(at 118.11 88.8999 0)
 			(effects
 				(font
@@ -9060,6 +9379,73 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GNDD")
+		(at 97.79 129.54 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7e99bb9b-64f0-4f42-b2f8-afafb6c453a4")
+		(property "Reference" "#PWR033"
+			(at 97.79 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GNDD"
+			(at 97.79 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 97.79 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 97.79 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
+			(at 97.79 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5940aec5-f53a-4662-a1be-501546b75ff9")
+		)
+		(instances
+			(project "power_supply_control_module"
+				(path "/8a59f7e1-1322-41b5-b17e-a5f5aaee754e"
+					(reference "#PWR033")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Mechanical:MountingHole")
 		(at 280.67 158.75 0)
 		(mirror y)
@@ -9210,6 +9596,167 @@
 			(project "power_supply_control_module"
 				(path "/8a59f7e1-1322-41b5-b17e-a5f5aaee754e"
 					(reference "J6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "MCU_Microchip_ATmega:ATmega328PB-A")
+		(at 45.72 67.31 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "87a4fd4e-1bba-4d16-9581-072aea69aab7")
+		(property "Reference" "U2"
+			(at 47.8633 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "ATmega328PB-A"
+			(at 47.8633 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_QFP:TQFP-32_7x7mm_P0.8mm"
+			(at 45.72 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://ww1.microchip.com/downloads/en/DeviceDoc/40001906C.pdf"
+			(at 45.72 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "20MHz, 32kB Flash, 2kB SRAM, 1kB EEPROM, TQFP-32"
+			(at 45.72 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "21"
+			(uuid "4c7fe655-046d-4b6f-b62f-cd4bfdb33268")
+		)
+		(pin "8"
+			(uuid "d51c8248-b516-400e-a62f-0b50452b340b")
+		)
+		(pin "22"
+			(uuid "4e6e2dd0-c0d2-4c8e-9f47-f68fd8475ac7")
+		)
+		(pin "19"
+			(uuid "fa87dc4c-d474-411e-8c90-6c5ee309debd")
+		)
+		(pin "20"
+			(uuid "27241485-aa52-4a7f-8251-e9dfeae47019")
+		)
+		(pin "3"
+			(uuid "4cc24694-c513-4e96-8931-64ff8ea764f3")
+		)
+		(pin "6"
+			(uuid "7bea745b-a4e0-4282-9d74-c3e05f77b403")
+		)
+		(pin "4"
+			(uuid "a118c9c8-d4b2-4ba3-8e45-0b7031df276d")
+		)
+		(pin "12"
+			(uuid "59f33f6f-093a-4362-bd12-8d4799bf831c")
+		)
+		(pin "13"
+			(uuid "4fd3045b-b9e0-47cd-bc87-3cb27f180d57")
+		)
+		(pin "14"
+			(uuid "f17427fd-2b2a-4063-872d-b63cad033053")
+		)
+		(pin "15"
+			(uuid "32e65c89-5142-4442-af78-46da5a525ab9")
+		)
+		(pin "18"
+			(uuid "a966483c-11d2-43b9-9eeb-cde60ec86148")
+		)
+		(pin "5"
+			(uuid "9db47327-d6ed-4e6d-a402-2a29c0a0ce24")
+		)
+		(pin "16"
+			(uuid "ac48a9a9-df13-4bd1-8be2-e953ef2731cb")
+		)
+		(pin "17"
+			(uuid "e878bf6f-9a75-4db1-8e36-46a5befe91ae")
+		)
+		(pin "7"
+			(uuid "6c371694-6987-46fa-8cb7-b0f971013600")
+		)
+		(pin "9"
+			(uuid "2e292c96-da91-4ffe-adf9-9736b45ac3ef")
+		)
+		(pin "31"
+			(uuid "fc259363-75c8-442b-8eda-7359f7ccb19c")
+		)
+		(pin "2"
+			(uuid "c10d95fa-05b8-4760-9bb6-b9ff485d8400")
+		)
+		(pin "24"
+			(uuid "f01dfdbf-713f-4599-97d7-55b0e132caa5")
+		)
+		(pin "30"
+			(uuid "12ba947e-ad14-458d-a56c-d3a2ae515bb4")
+		)
+		(pin "27"
+			(uuid "548a8d67-917e-4354-8098-8d411da43f22")
+		)
+		(pin "29"
+			(uuid "ec856291-7a0e-4c35-b70f-cdab88569f54")
+		)
+		(pin "11"
+			(uuid "0357f8cc-9447-473c-b88e-3501adc2426e")
+		)
+		(pin "10"
+			(uuid "387a5aa7-9dcb-4480-8d4d-0b74d9b6c62a")
+		)
+		(pin "26"
+			(uuid "01e586af-8404-4328-be56-e49c7246fd2a")
+		)
+		(pin "23"
+			(uuid "1489e4d7-2e3e-40f8-9931-3779d15ac9d2")
+		)
+		(pin "1"
+			(uuid "b769fbb6-7566-46f9-a5d7-bc45689c7d52")
+		)
+		(pin "32"
+			(uuid "6df7bba0-020a-4433-963d-8675bacedf8f")
+		)
+		(pin "28"
+			(uuid "509f17b8-6dd3-4a2c-82fb-317b14897736")
+		)
+		(pin "25"
+			(uuid "f6ce76e8-da7d-4cbf-9b02-a1b91086b563")
+		)
+		(instances
+			(project ""
+				(path "/8a59f7e1-1322-41b5-b17e-a5f5aaee754e"
+					(reference "U2")
 					(unit 1)
 				)
 			)
@@ -9431,7 +9978,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x02")
-		(at 158.75 29.21 0)
+		(at 162.56 29.21 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9440,7 +9987,7 @@
 		(fields_autoplaced yes)
 		(uuid "a92da76a-678b-4241-850a-8f62770800b9")
 		(property "Reference" "J4"
-			(at 161.29 29.2099 0)
+			(at 165.1 29.2099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9449,7 +9996,7 @@
 			)
 		)
 		(property "Value" "POWER"
-			(at 161.29 31.7499 0)
+			(at 165.1 31.7499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9458,7 +10005,7 @@
 			)
 		)
 		(property "Footprint" "EDAC:140502415001"
-			(at 158.75 29.21 0)
+			(at 162.56 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9467,7 +10014,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.tme.eu/Document/30251fbd2328f1383e4b191d860ecad2/EDAC140.pdf"
-			(at 158.75 29.21 0)
+			(at 162.56 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9476,7 +10023,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 158.75 29.21 0)
+			(at 162.56 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9485,7 +10032,7 @@
 			)
 		)
 		(property "Field5" ""
-			(at 158.75 29.21 0)
+			(at 162.56 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9819,6 +10366,7 @@
 		)
 	)
 	(symbol
+		(lib_name "RotaryEncoder_1")
 		(lib_id "Device:RotaryEncoder")
 		(at 97.79 120.65 0)
 		(unit 1)
@@ -9891,6 +10439,9 @@
 		(pin "B"
 			(uuid "234ed8b1-1ccb-4ead-865d-93ccf5e16705")
 		)
+		(pin "MP"
+			(uuid "476fb3fe-f070-49fa-a268-9fb75188b091")
+		)
 		(instances
 			(project ""
 				(path "/8a59f7e1-1322-41b5-b17e-a5f5aaee754e"
@@ -9902,7 +10453,7 @@
 	)
 	(symbol
 		(lib_id "power:VCC")
-		(at 152.4 27.94 0)
+		(at 154.94 27.94 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9911,7 +10462,7 @@
 		(fields_autoplaced yes)
 		(uuid "b84f6b28-0c63-4b7d-af90-89b905732408")
 		(property "Reference" "#PWR015"
-			(at 152.4 31.75 0)
+			(at 154.94 31.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9920,7 +10471,7 @@
 			)
 		)
 		(property "Value" "VCC"
-			(at 152.4 22.86 0)
+			(at 154.94 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9929,7 +10480,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 152.4 27.94 0)
+			(at 154.94 27.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9938,7 +10489,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 152.4 27.94 0)
+			(at 154.94 27.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9947,7 +10498,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"VCC\""
-			(at 152.4 27.94 0)
+			(at 154.94 27.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10173,175 +10724,6 @@
 			(project "power_supply_control_module"
 				(path "/8a59f7e1-1322-41b5-b17e-a5f5aaee754e"
 					(reference "#PWR011")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "MCU_Microchip_ATmega:ATmega328P-A")
-		(at 45.72 67.31 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "c5de11dc-8c68-4e5c-b301-463ff49160a4")
-		(property "Reference" "U2"
-			(at 44.45 110.49 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "ATmega328P-A"
-			(at 38.1 112.776 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Package_QFP:TQFP-32_7x7mm_P0.8mm"
-			(at 45.72 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "http://ww1.microchip.com/downloads/en/DeviceDoc/ATmega328_P%20AVR%20MCU%20with%20picoPower%20Technology%20Data%20Sheet%2040001984A.pdf"
-			(at 45.72 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "20MHz, 32kB Flash, 2kB SRAM, 1kB EEPROM, TQFP-32"
-			(at 45.72 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Field5" ""
-			(at 45.72 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "19"
-			(uuid "f25dae7d-8a00-445f-9761-c1b1e57972fc")
-		)
-		(pin "4"
-			(uuid "d7792b67-dd6a-46c1-9acd-48148c2809fd")
-		)
-		(pin "20"
-			(uuid "d3f9f7fa-20a1-4c5f-b3c0-cb61ae5ecfc1")
-		)
-		(pin "22"
-			(uuid "362efcc2-cd89-470d-b1c3-e0f87a81d341")
-		)
-		(pin "32"
-			(uuid "d8fdee44-b575-4aa3-9808-cb08f735dcb3")
-		)
-		(pin "2"
-			(uuid "f0258b75-46d4-4007-b207-7c2c838bcbd0")
-		)
-		(pin "24"
-			(uuid "7512063e-f8c0-49df-95b9-61029c79ced4")
-		)
-		(pin "11"
-			(uuid "4f7eb304-7e00-4984-9ef4-a960eecdbbc7")
-		)
-		(pin "15"
-			(uuid "62f18181-0c46-4261-95ee-a9eed38fe8f6")
-		)
-		(pin "7"
-			(uuid "c63d1c07-6d65-41dd-aca2-8f5957b633b8")
-		)
-		(pin "23"
-			(uuid "5526162c-aefe-4311-bdf1-1378b7b277e4")
-		)
-		(pin "16"
-			(uuid "a031072f-903b-425c-98e0-7b2823e39dab")
-		)
-		(pin "27"
-			(uuid "138e7d6e-653c-4528-a7c4-652c01dcf168")
-		)
-		(pin "18"
-			(uuid "abcd32c8-6c7f-4b8b-a285-ee8a8a69e406")
-		)
-		(pin "14"
-			(uuid "84d0ec80-8617-4ecb-920f-30688b37a133")
-		)
-		(pin "13"
-			(uuid "c9ca0941-423f-4dcd-bed6-8a9551534661")
-		)
-		(pin "5"
-			(uuid "cf5736bc-0469-4294-8d83-e2b365144fe1")
-		)
-		(pin "26"
-			(uuid "1effc14a-b545-4563-af4c-e638083e143e")
-		)
-		(pin "3"
-			(uuid "2dbad931-386e-4f81-ae3a-faf591f1ff5f")
-		)
-		(pin "28"
-			(uuid "78d784d8-fe9b-440d-a54b-a0b5b5edcb6e")
-		)
-		(pin "30"
-			(uuid "cb34bbcf-8fcb-4544-ae4b-9444d4e03b99")
-		)
-		(pin "12"
-			(uuid "0fa521dd-9168-4348-a19c-744c1690250b")
-		)
-		(pin "17"
-			(uuid "7914e02f-696e-4bef-988d-8ae8688902e9")
-		)
-		(pin "21"
-			(uuid "0dd623bc-914e-4197-86e8-e6aa40827de0")
-		)
-		(pin "29"
-			(uuid "aedae3b7-2c82-4ca5-bccd-fcb13c57199e")
-		)
-		(pin "6"
-			(uuid "37a9f443-2d74-48fb-b24c-e353a9aa45eb")
-		)
-		(pin "8"
-			(uuid "3b91484e-5a2a-44b6-9534-b59240262bc8")
-		)
-		(pin "25"
-			(uuid "48dd415c-6d49-430b-9594-84cc45246e69")
-		)
-		(pin "31"
-			(uuid "e0d1e399-a71a-45ed-b7e3-028261c312c8")
-		)
-		(pin "1"
-			(uuid "39dd767b-1779-403b-aeea-6b6d18e40212")
-		)
-		(pin "9"
-			(uuid "87d22592-d93e-4164-935f-53392f455e68")
-		)
-		(pin "10"
-			(uuid "3bdef01a-1794-40b3-95e7-40a32649396a")
-		)
-		(instances
-			(project ""
-				(path "/8a59f7e1-1322-41b5-b17e-a5f5aaee754e"
-					(reference "U2")
 					(unit 1)
 				)
 			)
@@ -10609,7 +10991,7 @@
 	)
 	(symbol
 		(lib_id "power:GNDD")
-		(at 88.9 142.24 0)
+		(at 88.9 147.32 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10618,7 +11000,7 @@
 		(fields_autoplaced yes)
 		(uuid "cec60a72-3a8f-4d84-8e9f-06c17ded6812")
 		(property "Reference" "#PWR030"
-			(at 88.9 148.59 0)
+			(at 88.9 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10627,7 +11009,7 @@
 			)
 		)
 		(property "Value" "GNDD"
-			(at 88.9 146.05 0)
+			(at 88.9 151.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10636,7 +11018,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 88.9 142.24 0)
+			(at 88.9 147.32 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10645,7 +11027,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 88.9 142.24 0)
+			(at 88.9 147.32 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10654,7 +11036,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 88.9 142.24 0)
+			(at 88.9 147.32 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10863,6 +11245,73 @@
 			(project "power_supply_control_module"
 				(path "/8a59f7e1-1322-41b5-b17e-a5f5aaee754e"
 					(reference "U1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GNDD")
+		(at 97.79 147.32 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e63ac2da-b22b-4a2d-aa90-d6170a93bee0")
+		(property "Reference" "#PWR034"
+			(at 97.79 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GNDD"
+			(at 97.79 151.13 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 97.79 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 97.79 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
+			(at 97.79 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f9964fbd-2267-4419-b89b-f3c4192d8388")
+		)
+		(instances
+			(project "power_supply_control_module"
+				(path "/8a59f7e1-1322-41b5-b17e-a5f5aaee754e"
+					(reference "#PWR034")
 					(unit 1)
 				)
 			)
@@ -11373,7 +11822,7 @@
 	)
 	(symbol
 		(lib_id "power:GNDD")
-		(at 152.4 35.56 0)
+		(at 154.94 35.56 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11382,7 +11831,7 @@
 		(fields_autoplaced yes)
 		(uuid "f2aa7441-d6d4-4631-8f82-d61fe190cf36")
 		(property "Reference" "#PWR017"
-			(at 152.4 41.91 0)
+			(at 154.94 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11391,7 +11840,7 @@
 			)
 		)
 		(property "Value" "GNDD"
-			(at 152.4 39.37 0)
+			(at 154.94 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11400,7 +11849,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 152.4 35.56 0)
+			(at 154.94 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11409,7 +11858,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 152.4 35.56 0)
+			(at 154.94 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11418,7 +11867,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 152.4 35.56 0)
+			(at 154.94 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11489,6 +11938,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Field5" ""
