@@ -9,3 +9,5 @@
 
 arduino-cli compile -b arduino:avr:uno --libraries ./lib -v --output-dir ./build
 arduino-cli upload -p COM10
+
+"/c/Users/Martin/AppData/Local/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/bin/avr-objdump.exe" -d -S build/pscm.ino.elf > build/pscm.ino.elf.asm

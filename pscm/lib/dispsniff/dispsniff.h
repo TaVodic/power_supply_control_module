@@ -19,13 +19,14 @@ extern "C" {
 #endif
 
 // Ring buffer size
-#ifndef DISPSNIFF_RB_SZ 
-#define DISPSNIFF_RB_SZ 256 
+#ifndef DISPSNIFF_RB_SZ
+#define DISPSNIFF_RB_SZ 256
 #endif
 
 // Markers returned by dispsniff_read()
-#define START_MARK  ((uint8_t)'S') 
-#define END_MARK  ((uint8_t)'E') 
+#define START_MARK ((uint8_t)0x40) // Data command setting -> Address auto + 1
+#define END_MARK   ((uint8_t)0x8A) // Display control -> Set pulse width to 4/16
+#define DATA_MARK  ((uint8_t)0xC0) // Address command setting -> Display address 00H
 
 // Init sniffer (uses PD2=INT0 as CLK, PD3=INT1 as DIN, no pullups).
 void dispsniff_begin(void);
@@ -42,13 +43,15 @@ uint8_t dispsniff_read(uint8_t *out);
 // Optional: clear buffered data.
 void dispsniff_flush(void);
 
+uint16_t dispsniff_poll(void);
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif
 
-/* 
+/*
 
 Example output 00.00 0.000 0.000
 [S] 40

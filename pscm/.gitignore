@@ -1,2 +1,5 @@
 build/
 *.exe
+*.s
+*.i
+*.ii

@@ -4,6 +4,7 @@
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
+#include <math.h>
 #include <util/atomic.h>
 
 static volatile uint8_t rb[DISPSNIFF_RB_SZ]; // ring buffer, indexes -> 255+1=0 2-254=4
@@ -11,12 +12,13 @@ static volatile uint8_t rb_w = 0;            // ring buffer write index
 static volatile uint8_t rb_r = 0;            // ring buffer read index
 
 // Sniffer state
-static volatile uint8_t in_frame = 0; // are we currently in frame?
-static volatile uint8_t bitcnt = 0;   // index in temp
-static volatile uint8_t temp = 0;     // temp in ISR, when full (8b) then wrote to ring buffer
+static volatile uint8_t in_frame = 0;     // are we currently in frame?
+static volatile uint8_t bitcnt = 0;       // index in temp
+static volatile uint8_t temp = 0;         // temp in ISR, when full (8b) then wrote to ring buffer
+static volatile uint8_t pending_mark = 0; // 0=no event, 'S' or 'E'
 
-static inline uint8_t clk_level(void) { return (PIND & (uint8_t)(1u << DISPSNIFF_CLK_PIN_PORTD)) ? 1u : 0u; } // uint8_t v = (PIND >> DISPSNIFF_CLK_PIN_PORTD) & 1u
-static inline uint8_t din_level(void) { return (PIND & (uint8_t)(1u << DISPSNIFF_DIN_PIN_PORTD)) ? 1u : 0u; }
+static inline uint8_t clk_level(void) { return (PIND >> DISPSNIFF_CLK_PIN_PORTD) & 1u; }
+static inline uint8_t din_level(void) { return (PIND >> DISPSNIFF_DIN_PIN_PORTD) & 1u; }
 
 static inline void rb_put(uint8_t v) {
   uint8_t n = (uint8_t)(rb_w + 1u);
@@ -56,31 +58,27 @@ void dispsniff_flush(void) {
 // Change of DIN happens only on START or END
 // INT1: DIN changed -> detect START/END when CLK high
 ISR(INT1_vect) {
-  if (!clk_level())
+  if (!clk_level()) {
     return;
-
+  }
   // If CLK high, START is DIN high->low; END is DIN low->high.
-  if (!din_level()) {
-    // START
+  if (!din_level()) { // START
     in_frame = 1;
     bitcnt = 0;
     temp = 0;
-    rb_put((uint8_t)START_MARK);
-  } else {
-    // END
-    if (in_frame)
-      rb_put((uint8_t)END_MARK);
+  } else { // END
     in_frame = 0;
     bitcnt = 0;
     temp = 0;
   }
+  PORTB &= ~(1u << PB0);
 }
 
 // INT0: CLK rising -> sample DIN, assemble byte LSB first
 ISR(INT0_vect) {
   if (!in_frame)
     return;
-
+  PORTB |= (1u << PB0);
   // Data captured on CLK rising edge; LSB first.
   uint8_t bit = din_level() ? 1u : 0u;
   temp |= (uint8_t)(bit << bitcnt);
@@ -91,6 +89,7 @@ ISR(INT0_vect) {
     temp = 0;
     bitcnt = 0;
   }
+  PORTB &= ~(1u << PB0);
 }
 
 static void io_init(void) {
