@@ -16,6 +16,7 @@ static volatile uint8_t in_frame = 0;     // are we currently in frame?
 static volatile uint8_t bitcnt = 0;       // index in temp
 static volatile uint8_t temp = 0;         // temp in ISR, when full (8b) then wrote to ring buffer
 static volatile uint8_t pending_mark = 0; // 0=no event, 'S' or 'E'
+static volatile uint8_t last_data_N = 0;
 
 static inline uint8_t clk_level(void) { return (PIND >> DISPSNIFF_CLK_PIN_PORTD) & 1u; }
 static inline uint8_t din_level(void) { return (PIND >> DISPSNIFF_DIN_PIN_PORTD) & 1u; }
@@ -29,6 +30,8 @@ static inline void rb_put(uint8_t v) {
 }
 
 uint8_t dispsniff_available(void) {
+  if (in_frame)
+    return 0;
   uint8_t w, r;
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
     w = rb_w;
@@ -70,6 +73,10 @@ ISR(INT1_vect) {
     in_frame = 0;
     bitcnt = 0;
     temp = 0;
+    if ((uint8_t)(rb_w - rb_r) - last_data_N >= 13) { // ensure only valid frames will cause old data overide
+      rb_r = rb_r + last_data_N; // ensure only last byte is in mem
+      last_data_N = (uint8_t)(rb_w - rb_r);
+    }
   }
   PORTB &= ~(1u << PB0);
 }
