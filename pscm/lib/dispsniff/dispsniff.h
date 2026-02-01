@@ -43,7 +43,8 @@ uint8_t dispsniff_read(uint8_t *out);
 // Optional: clear buffered data.
 void dispsniff_flush(void);
 
-uint16_t dispsniff_poll(void);
+// Poll for new data and decode voltage/current/power values.
+uint8_t dispsniff_poll(uint16_t *voltage, uint16_t *current, uint16_t *power);
 
 #ifdef __cplusplus
 }
