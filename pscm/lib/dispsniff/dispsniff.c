@@ -73,12 +73,11 @@ ISR(INT1_vect) {
     in_frame = 0;
     bitcnt = 0;
     temp = 0;
-    if ((uint8_t)(rb_w - rb_r) - last_data_N >= 13) { // ensure only valid frames will cause old data overide
-      rb_r = rb_r + last_data_N; // ensure only last byte is in mem
+    /*if ((uint8_t)(rb_w - rb_r) - last_data_N >= 13) { // ensure only valid frames will cause old data overide
+      rb_r = rb_r + last_data_N;                      // ensure only last byte is in mem
       last_data_N = (uint8_t)(rb_w - rb_r);
-    }
+    }*/
   }
-  PORTB &= ~(1u << PB0);
 }
 
 // INT0: CLK rising -> sample DIN, assemble byte LSB first
