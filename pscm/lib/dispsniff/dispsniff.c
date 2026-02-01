@@ -28,8 +28,6 @@ static volatile uint8_t rb_r = 0;            // ring buffer read index
 static volatile uint8_t in_frame = 0;     // are we currently in frame?
 static volatile uint8_t bitcnt = 0;       // index in temp
 static volatile uint8_t temp = 0;         // temp in ISR, when full (8b) then wrote to ring buffer
-static volatile uint8_t pending_mark = 0; // 0=no event, 'S' or 'E'
-static volatile uint8_t last_data_N = 0;
 
 static inline uint8_t clk_level(void) { return (PIND >> DISPSNIFF_CLK_PIN_PORTD) & 1u; }
 static inline uint8_t din_level(void) { return (PIND >> DISPSNIFF_DIN_PIN_PORTD) & 1u; }
@@ -99,23 +97,21 @@ uint8_t dispsniff_read_next_quartet(uint16_t *value) {
 
 uint8_t dispsniff_poll(uint16_t *voltage, uint16_t *current, uint16_t *power) {
   uint8_t v;
-  if (dispsniff_available() >= 14) {
-    while (dispsniff_available()) {
+  uint8_t avail = dispsniff_available();
+  if (avail >= 14) {
+    while (avail) {
       dispsniff_read(&v);
       // printHex(v);
       // Serial.print(" ");
       if (v == DATA_MARK) {
         // Serial.println("START ");
-        if (!dispsniff_read_next_quartet(voltage))
-          return 0;
+        if (!dispsniff_read_next_quartet(voltage)) return 0;
         // Serial.print("  V=");
         // Serial.print(*voltage);
-        if (!dispsniff_read_next_quartet(current))
-          return 0;
+        if (!dispsniff_read_next_quartet(current)) return 0;
         // Serial.print("  A=");
         // Serial.print(*current);
-        if (!dispsniff_read_next_quartet(power))
-          return 0;
+        if (!dispsniff_read_next_quartet(power)) return 0;
         // Serial.print("  W=");
         // Serial.println(*power);
         return 2;
