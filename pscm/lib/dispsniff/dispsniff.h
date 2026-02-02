@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+//#define DISP_DEBUG
+
 #ifdef __cplusplus
 extern "C" {
 #endif

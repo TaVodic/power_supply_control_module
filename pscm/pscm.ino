@@ -13,9 +13,14 @@ Encoder ENC_C(pin_ENC_C_A, pin_ENC_C_B);
 
 int32_t oldPosition = 0;
 
+uint16_t voltage = 0;
+uint16_t current = 0;
+uint16_t power = 0;
+
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(8, OUTPUT); // debug pin PB0
+  pinMode(8, OUTPUT);  // debug pin PB0
+  pinMode(A0, OUTPUT); // debug pin PC0
 
   Serial.begin(115200);
   delay(50);
@@ -30,9 +35,6 @@ void setup() {
 }
 
 void loop() {
-  uint16_t voltage;
-  uint16_t current;
-  uint16_t power;
 
   int32_t newPosition = ENC_V.read();
   if (newPosition != oldPosition) {

@@ -25,9 +25,9 @@ static volatile uint8_t rb_w = 0;            // ring buffer write index
 static volatile uint8_t rb_r = 0;            // ring buffer read index
 
 // Sniffer state
-static volatile uint8_t in_frame = 0;     // are we currently in frame?
-static volatile uint8_t bitcnt = 0;       // index in temp
-static volatile uint8_t temp = 0;         // temp in ISR, when full (8b) then wrote to ring buffer
+static volatile uint8_t in_frame = 0; // are we currently in frame?
+static volatile uint8_t bitcnt = 0;   // index in temp
+static volatile uint8_t temp = 0;     // temp in ISR, when full (8b) then wrote to ring buffer
 
 static inline uint8_t clk_level(void) { return (PIND >> DISPSNIFF_CLK_PIN_PORTD) & 1u; }
 static inline uint8_t din_level(void) { return (PIND >> DISPSNIFF_DIN_PIN_PORTD) & 1u; }
@@ -149,7 +149,9 @@ ISR(INT1_vect) {
 ISR(INT0_vect) {
   if (!in_frame)
     return;
+#ifdef DISP_DEBUG
   PORTB |= (1u << PB0);
+#endif
   // Data captured on CLK rising edge; LSB first.
   uint8_t bit = din_level() ? 1u : 0u;
   temp |= (uint8_t)(bit << bitcnt);
@@ -160,7 +162,9 @@ ISR(INT0_vect) {
     temp = 0;
     bitcnt = 0;
   }
+#ifdef DISP_DEBUG
   PORTB &= ~(1u << PB0);
+#endif
 }
 
 static void io_init(void) {

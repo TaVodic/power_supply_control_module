@@ -12,8 +12,7 @@
 #define ENC_DEB_TICKS   (ENC_DEB_US * T1_TICKS_PER_US)
 
 Encoder_internal_state_t *Encoder::interruptArgs[28] = {nullptr};
-static inline void t1_init_freerun(void);
-
+static inline void timer1_init(void);
 static volatile uint16_t enc_last_t1 = 0;
 
 Encoder::Encoder(uint8_t pin1, uint8_t pin2) {
@@ -50,50 +49,37 @@ void Encoder::begin() {
   PCMSK2 |= (1 << PCINT7); // PCINT23 Pin Change Mask Register //PD7
   PCICR |= (1 << PCIE2);   // Pin Change Interrupt Control Register
 
-  t1_init_freerun();
-
-#ifdef ENC_DEBUG
-  Serial.println("Encoder initialized");
-  Serial.print("PCINT20/22:");
-  Serial.println(digitalPinToPCINT(pin1));
-#endif
+  timer1_init();
 }
 
-static inline void t1_init_freerun(void) {
-  TCCR1A = 0;           // TC1 Control Register A (disable OC pins)
-  TCCR1B = (1 << CS11); // prescaler = 8 - 0.5us per tick at 16MHz
-  TCNT1 = 0;            // TC1 Counter Value - reset the counter
-}
-
-static inline uint8_t enc_debounce_pass(void) {
-  uint16_t now = TCNT1;
-  uint16_t dt = (uint16_t)(now - enc_last_t1); // wrap-safe
-  if (dt < (uint16_t)ENC_DEB_TICKS)
-    return 0;
-  enc_last_t1 = now;
-  return 1;
+static inline void timer1_init(void) {
+  TCCR1A = 0;                          // Reset TC1 Control Register A
+  TCCR1B = 0;                          // Reset TC1 Control Register B
+  TCCR1B = (1 << WGM12) | (1 << CS11); // CTC, prescaler = 8
+  TCNT1 = 0;                           // TC1 Counter Value - reset the counter
+  OCR1A = 1199u;                       // 600us at 0.5us per tick
 }
 
 int32_t Encoder::read() {
   int32_t ret;
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-    update(&encoder);
     ret = encoder.position;
   }
   return ret;
+}
+
+ISR(TIMER1_COMPA_vect) {
+#ifdef ENC_DEBUG
+  PORTC &= ~(1u << PC0);
+#endif
+  TIMSK1 &= ~(1 << OCIE1A); // turn off timer interrupt
+  PCICR |= (1 << PCIE2);    // Pin Change Interrupt Control Register
 }
 
 ISR(PCINT2_vect) {
 #ifdef ENC_DEBUG
   PORTB |= (1u << PB0);
 #endif
-  if (!enc_debounce_pass()) {
-#ifdef ENC_DEBUG
-    PORTB &= ~(1u << PB0);
-#endif
-    return;
-  }
-
   Encoder_internal_state_t *e20 = Encoder::interruptArgs[20];
   if (e20) {
     Encoder::update(e20);
@@ -102,8 +88,14 @@ ISR(PCINT2_vect) {
   if (e22) {
     Encoder::update(e22);
   }
+
+  PCICR &= ~(1 << PCIE2);  // Pin Change Interrupt Control Register - diable PCINT
+  TIFR1 |= (1 << OCF1A);   // clear Interrupt Flag if pending
+  TCNT1 = 0;               // TC1 Counter Value - reset the counter
+  TIMSK1 |= (1 << OCIE1A); // TC1 Interrupt Mask Register - enable timer interrupt
 #ifdef ENC_DEBUG
   PORTB &= ~(1u << PB0);
+  PORTC |= (1u << PC0);
 #endif
 }
 
