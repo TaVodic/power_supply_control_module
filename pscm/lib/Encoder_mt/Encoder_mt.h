@@ -20,10 +20,10 @@ typedef struct { // Do not reorder fields; asm depends on this layout!
 
 class Encoder {
 public:
-  // one step setup like before
-  Encoder(uint8_t pin1, uint8_t pin2);
 
-  void begin();
+  Encoder();
+
+  uint8_t begin(uint8_t pin1, uint8_t pin2);
   int32_t read();
 
   // TODO: reduce array size to only two Encoders
@@ -32,8 +32,6 @@ public:
 
 private:
   Encoder_internal_state_t encoder;
-  uint8_t pin1;
-  uint8_t pin2;  
 };
 
 #endif

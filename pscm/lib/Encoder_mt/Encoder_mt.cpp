@@ -15,13 +15,14 @@ Encoder_internal_state_t *Encoder::interruptArgs[28] = {nullptr};
 static inline void timer1_init(void);
 static volatile uint16_t enc_last_t1 = 0;
 
-Encoder::Encoder(uint8_t pin1, uint8_t pin2) {
-  // TODO: allow only specific pins PD4, PD5, PD6, PD7
-  this->pin1 = pin1;
-  this->pin2 = pin2;
-}
+Encoder::Encoder() {}
 
-void Encoder::begin() {
+uint8_t Encoder::begin(uint8_t pin1, uint8_t pin2) {
+
+  if (pin1 < 4 || pin1 > 7) return false;
+  if (pin2 < 4 || pin2 > 7) return false;
+  if (pin1 == pin2) return false;
+
   pinMode(pin1, INPUT_PULLUP);
   pinMode(pin2, INPUT_PULLUP);
 
@@ -50,6 +51,7 @@ void Encoder::begin() {
   PCICR |= (1 << PCIE2);   // Pin Change Interrupt Control Register
 
   timer1_init();
+  return true;
 }
 
 static inline void timer1_init(void) {

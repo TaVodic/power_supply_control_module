@@ -8,8 +8,8 @@
 
 MCP4251 MCP_1(pin_MCP_CS1);
 MCP4251 MCP_2(pin_MCP_CS2);
-Encoder ENC_V(pin_ENC_V_A, pin_ENC_V_B);
-Encoder ENC_C(pin_ENC_C_A, pin_ENC_C_B);
+Encoder ENC_V;
+Encoder ENC_C;
 
 int32_t oldPosition = 0;
 
@@ -30,8 +30,12 @@ void setup() {
   dispsniff_begin();
   MCP_1.begin();
   MCP_2.begin();
-  ENC_V.begin();
-  ENC_C.begin();
+  if (!ENC_V.begin(pin_ENC_V_A, pin_ENC_V_B)) {
+    Serial.println("ENC_V init failed: only PD4,PD5,PD6,PD7 are supported!");
+  }
+  if (!ENC_C.begin(pin_ENC_C_A, pin_ENC_C_B)) {
+    Serial.println("ENC_C init failed: only PD4,PD5,PD6,PD7 are supported!");
+  }
 }
 
 void loop() {
