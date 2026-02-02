@@ -7,10 +7,10 @@
 
 #define digitalPinToPCINT(p) (((p) >= 8 && (p) <= 13) ? (0 + ((p) - 8)) : (((p) >= 20 && (p) <= 21) ? (0 + ((p) - 14)) : (((p) >= 14 && (p) <= 19) ? (8 + ((p) - 14)) : (((p) >= 0 && (p) <= 7) ? (16 + (p)) : (((p) >= 22 && (p) <= 25) ? (24 + ((p) - 22)) : 0)))))
 
-#define ENC_DEB_US      600u
+#define ENC_DEB_US      300u
 #define T1_TICKS_PER_US 2u // with prescaler = 8 at 16MHz
-#define ENC_DEB_TICKS   (ENC_DEB_US * T1_TICKS_PER_US)
-  
+#define ENC_DEB_TICKS   (ENC_DEB_US * T1_TICKS_PER_US - 1)
+
 Encoder_internal_state_t *Encoder::encVoltage = nullptr;
 Encoder_internal_state_t *Encoder::encCurrent = nullptr;
 static inline void timer1_init(void);
@@ -65,7 +65,7 @@ static inline void timer1_init(void) {
   TCCR1B = 0;                          // Reset TC1 Control Register B
   TCCR1B = (1 << WGM12) | (1 << CS11); // CTC, prescaler = 8
   TCNT1 = 0;                           // TC1 Counter Value - reset the counter
-  OCR1A = 1199u;                       // 600us at 0.5us per tick
+  OCR1A = ENC_DEB_TICKS;               // 600us at 0.5us per tick
 }
 
 int32_t Encoder::read() {

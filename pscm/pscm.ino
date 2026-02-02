@@ -11,7 +11,8 @@ MCP4251 MCP_2(pin_MCP_CS2);
 Encoder ENC_V;
 Encoder ENC_C;
 
-int32_t oldPosition = 0;
+int32_t oldPosition_V = 0;
+int32_t oldPosition_C = 0;
 
 uint16_t voltage = 0;
 uint16_t current = 0;
@@ -40,16 +41,30 @@ void setup() {
 
 void loop() {
 
-  int32_t newPosition = ENC_V.read();
-  if (newPosition != oldPosition) {
-    oldPosition = newPosition;
-    Serial.println(newPosition);
-    dispsniff_poll(&voltage, &current, &power);
-    Serial.print("  V=");
+  int32_t newPosition_V = ENC_V.read();
+  if (newPosition_V != oldPosition_V) {
+    oldPosition_V = newPosition_V;
+    Serial.print("V: ");
+    Serial.println(newPosition_V);
+    /*dispsniff_poll(&voltage, &current, &power);
+    Serial.print("V=");
     Serial.print(voltage);
     Serial.print("  A=");
     Serial.print(current);
     Serial.print("  W=");
-    Serial.println(power);
+    Serial.println(power);*/
+  }
+  int32_t newPosition_C = ENC_C.read();
+  if (newPosition_C != oldPosition_C) {
+    oldPosition_C = newPosition_C;
+    Serial.print("C: ");
+    Serial.println(newPosition_C);
+    /*dispsniff_poll(&voltage, &current, &power);
+    Serial.print("V=");
+    Serial.print(voltage);
+    Serial.print("  A=");
+    Serial.print(current);
+    Serial.print("  W=");
+    Serial.println(power);*/
   }
 }
