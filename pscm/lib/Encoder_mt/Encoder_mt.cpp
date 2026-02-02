@@ -1,17 +1,14 @@
 #include "Encoder_mt.h"
+#include <util/atomic.h>
 
 #define PIN_TO_BASEREG(pin)         (portInputRegister(digitalPinToPort(pin)))
 #define PIN_TO_BITMASK(pin)         (digitalPinToBitMask(pin))
 #define DIRECT_PIN_READ(base, mask) (((*(base)) & (mask)) ? 1 : 0)
 
-#define digitalPinToPCICR(p)    ((((p) >= 0 && (p) <= 7) || ((p) >= 8 && (p) <= 13) || ((p) >= 14 && (p) <= 19) || ((p) >= A8 && (p) <= A11)) ? (&PCICR) : ((uint8_t *)0))
-#define digitalPinToPCICRbit(p) (((p) >= 8 && (p) <= 13) ? 0 : (((p) >= 14 && (p) <= 19) ? 1 : (((p) >= 0 && (p) <= 7) ? 2 : (((p) >= A8 && (p) <= A11) ? 3 : 0))))
-#define digitalPinToPCMSK(p)    (((p) >= 8 && (p) <= 13) ? (&PCMSK0) : (((p) >= 14 && (p) <= 19) ? (&PCMSK1) : (((p) >= 0 && (p) <= 7) ? (&PCMSK2) : (((p) >= A8 && (p) <= A11) ? (&PCMSK3) : ((uint8_t *)0)))))
-#define digitalPinToPCMSKbit(p) (((p) >= 8 && (p) <= 13) ? ((p) - 8) : (((p) >= 14 && (p) <= 19) ? ((p) - 14) : (((p) >= 0 && (p) <= 7) ? (p) : (((p) >= A8 && (p) <= A11) ? ((p) - A8) : 0))))
-#define digitalPinToPCINT(p)    (((p) >= 8 && (p) <= 13) ? (0 + ((p) - 8)) : (((p) >= 20 && (p) <= 21) ? (0 + ((p) - 14)) : (((p) >= 14 && (p) <= 19) ? (8 + ((p) - 14)) : (((p) >= 0 && (p) <= 7) ? (16 + (p)) : (((p) >= 22 && (p) <= 25) ? (24 + ((p) - 22)) : 0)))))
+#define digitalPinToPCINT(p) (((p) >= 8 && (p) <= 13) ? (0 + ((p) - 8)) : (((p) >= 20 && (p) <= 21) ? (0 + ((p) - 14)) : (((p) >= 14 && (p) <= 19) ? (8 + ((p) - 14)) : (((p) >= 0 && (p) <= 7) ? (16 + (p)) : (((p) >= 22 && (p) <= 25) ? (24 + ((p) - 22)) : 0)))))
 
 #define ENC_DEB_US      600u
-#define T1_TICKS_PER_US 2u
+#define T1_TICKS_PER_US 2u // with prescaler = 8 at 16MHz
 #define ENC_DEB_TICKS   (ENC_DEB_US * T1_TICKS_PER_US)
 
 Encoder_internal_state_t *Encoder::interruptArgs[28] = {nullptr};
@@ -20,6 +17,7 @@ static inline void t1_init_freerun(void);
 static volatile uint16_t enc_last_t1 = 0;
 
 Encoder::Encoder(uint8_t pin1, uint8_t pin2) {
+  // TODO: allow only specific pins PD4, PD5, PD6, PD7
   this->pin1 = pin1;
   this->pin2 = pin2;
 }
@@ -51,19 +49,20 @@ void Encoder::begin() {
   PCMSK2 |= (1 << PCINT6); // PCINT22 Pin Change Mask Register //PD6
   PCMSK2 |= (1 << PCINT7); // PCINT23 Pin Change Mask Register //PD7
   PCICR |= (1 << PCIE2);   // Pin Change Interrupt Control Register
-  sei();                   // enable global interrupts
 
   t1_init_freerun();
 
+#ifdef ENC_DEBUG
   Serial.println("Encoder initialized");
   Serial.print("PCINT20/22:");
   Serial.println(digitalPinToPCINT(pin1));
+#endif
 }
 
 static inline void t1_init_freerun(void) {
-  TCCR1A = 0;
-  TCCR1B = (1 << CS11); // prescaler = 8
-  TCNT1 = 0;
+  TCCR1A = 0;           // TC1 Control Register A (disable OC pins)
+  TCCR1B = (1 << CS11); // prescaler = 8 - 0.5us per tick at 16MHz
+  TCNT1 = 0;            // TC1 Counter Value - reset the counter
 }
 
 static inline uint8_t enc_debounce_pass(void) {
@@ -76,17 +75,25 @@ static inline uint8_t enc_debounce_pass(void) {
 }
 
 int32_t Encoder::read() {
-  noInterrupts();
-  update(&encoder);
-  int32_t ret = encoder.position;
-  interrupts();
+  int32_t ret;
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    update(&encoder);
+    ret = encoder.position;
+  }
   return ret;
 }
 
 ISR(PCINT2_vect) {
-  if (!enc_debounce_pass())
-    return;
+#ifdef ENC_DEBUG
   PORTB |= (1u << PB0);
+#endif
+  if (!enc_debounce_pass()) {
+#ifdef ENC_DEBUG
+    PORTB &= ~(1u << PB0);
+#endif
+    return;
+  }
+
   Encoder_internal_state_t *e20 = Encoder::interruptArgs[20];
   if (e20) {
     Encoder::update(e20);
@@ -95,7 +102,9 @@ ISR(PCINT2_vect) {
   if (e22) {
     Encoder::update(e22);
   }
+#ifdef ENC_DEBUG
   PORTB &= ~(1u << PB0);
+#endif
 }
 
 void Encoder::update(Encoder_internal_state_t *arg) {
