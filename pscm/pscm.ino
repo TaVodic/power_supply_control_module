@@ -1,4 +1,4 @@
-#include "Encoder.h"
+#include "Encoder_mt.h"
 //#include "MCP4251.h"
 //#include "dispsniff.h"
 #include "pscm.h"
@@ -8,14 +8,14 @@
 
 //MCP4251 MCP_1(pin_MCP_CS1);
 //MCP4251 MCP_2(pin_MCP_CS2);
-Encoder ENC_V(3, 2);
+Encoder ENC_V(pin_ENC_V_A, pin_ENC_V_B);
 //Encoder ENC_C(pin_ENC_C_A, pin_ENC_C_B);
 
-int16_t oldPosition = 0;
+int32_t oldPosition = 0;
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(8, OUTPUT);
+  pinMode(8, OUTPUT); // debug pin PB0
 
   Serial.begin(115200);
   delay(50);
@@ -25,6 +25,7 @@ void setup() {
   //dispsniff_begin();
   //MCP_1.begin();
   //MCP_2.begin();
+  ENC_V.begin();
 }
 
 void loop() {
@@ -40,7 +41,7 @@ void loop() {
     Serial.println(power);
   }*/
 
-  long newPosition = ENC_V.read();
+  int32_t newPosition = ENC_V.read();
   if (newPosition != oldPosition) {
     oldPosition = newPosition;
     Serial.println(newPosition);
