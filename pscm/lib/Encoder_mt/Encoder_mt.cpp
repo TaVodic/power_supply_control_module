@@ -10,8 +10,9 @@
 #define ENC_DEB_US      600u
 #define T1_TICKS_PER_US 2u // with prescaler = 8 at 16MHz
 #define ENC_DEB_TICKS   (ENC_DEB_US * T1_TICKS_PER_US)
-
-Encoder_internal_state_t *Encoder::interruptArgs[28] = {nullptr};
+  
+Encoder_internal_state_t *Encoder::encVoltage = nullptr;
+Encoder_internal_state_t *Encoder::encCurrent = nullptr;
 static inline void timer1_init(void);
 static volatile uint16_t enc_last_t1 = 0;
 
@@ -41,8 +42,13 @@ uint8_t Encoder::begin(uint8_t pin1, uint8_t pin2) {
   }
   encoder.state = state;
 
-  interruptArgs[digitalPinToPCINT(pin1)] = &encoder; // assuming using first interrupt slot
-  interruptArgs[digitalPinToPCINT(pin2)] = &encoder; // assuming using second interrupt slot
+  if (pin1 == 4 || pin2 == 4) {
+    encVoltage = &encoder;
+  } else if (pin1 == 6 || pin2 == 6) {
+    encCurrent = &encoder;
+  } else {
+    return false;
+  }
 
   PCMSK2 |= (1 << PCINT4); // PCINT20 Pin Change Mask Register //PD4
   PCMSK2 |= (1 << PCINT5); // PCINT21 Pin Change Mask Register //PD5
@@ -82,14 +88,9 @@ ISR(PCINT2_vect) {
 #ifdef ENC_DEBUG
   PORTB |= (1u << PB0);
 #endif
-  Encoder_internal_state_t *e20 = Encoder::interruptArgs[20];
-  if (e20) {
-    Encoder::update(e20);
-  }
-  Encoder_internal_state_t *e22 = Encoder::interruptArgs[22];
-  if (e22) {
-    Encoder::update(e22);
-  }
+
+  Encoder::update(Encoder::encCurrent);
+  Encoder::update(Encoder::encVoltage);
 
   PCICR &= ~(1 << PCIE2);  // Pin Change Interrupt Control Register - diable PCINT
   TIFR1 |= (1 << OCF1A);   // clear Interrupt Flag if pending
