@@ -84,7 +84,7 @@ ISR(TIMER1_COMPA_vect) {
   PCICR |= (1 << PCIE2);    // Pin Change Interrupt Control Register
 }
 
-ISR(PCINT2_vect) {
+ISR(PCINT2_vect) { // max 9.5us
 #ifdef ENC_DEBUG
   PORTB |= (1u << PB0);
 #endif

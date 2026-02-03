@@ -129,8 +129,14 @@ void dispsniff_flush(void) {
 
 // Change of DIN happens only on START or END
 // INT1: DIN changed -> detect START/END when CLK high
-ISR(INT1_vect) {
+ISR(INT1_vect) { // max 1.167us
+#ifdef DISP_DEBUG
+  PORTC |= (1u << PC0);
+#endif
   if (!clk_level()) {
+#ifdef DISP_DEBUG
+    PORTC &= ~(1u << PC0);
+#endif
     return;
   }
   // If CLK high, START is DIN high->low; END is DIN low->high.
@@ -143,15 +149,22 @@ ISR(INT1_vect) {
     bitcnt = 0;
     temp = 0;
   }
+#ifdef DISP_DEBUG
+  PORTC &= ~(1u << PC0);
+#endif
 }
 
 // INT0: CLK rising -> sample DIN, assemble byte LSB first
-ISR(INT0_vect) {
-  if (!in_frame)
-    return;
+ISR(INT0_vect) { // max 5us
 #ifdef DISP_DEBUG
   PORTB |= (1u << PB0);
 #endif
+  if (!in_frame) {
+#ifdef DISP_DEBUG
+    PORTB &= ~(1u << PB0);
+#endif
+    return;
+  }
   // Data captured on CLK rising edge; LSB first.
   uint8_t bit = din_level() ? 1u : 0u;
   temp |= (uint8_t)(bit << bitcnt);

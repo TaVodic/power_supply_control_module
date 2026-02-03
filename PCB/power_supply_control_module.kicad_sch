@@ -7139,7 +7139,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "09c2b5a2-0d84-48ae-83cd-ddb0bedb74a3")
 		(property "Reference" "SW4"
 			(at 104.14 137.1599 0)
@@ -7186,13 +7185,12 @@
 				(hide yes)
 			)
 		)
-		(property "Field5" ""
-			(at 97.79 138.43 0)
+		(property "Field5" "EC12E"
+			(at 107.442 142.494 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(hide yes)
 			)
 		)
 		(pin "A"
@@ -10556,7 +10554,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "b6bb9a6e-2104-4c29-be70-d60b70170883")
 		(property "Reference" "SW3"
 			(at 104.14 119.3799 0)
@@ -10603,7 +10600,15 @@
 				(hide yes)
 			)
 		)
-		(property "Field5" ""
+		(property "Field5" "EC12E"
+			(at 107.442 124.714 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Field6" ""
 			(at 97.79 120.65 0)
 			(effects
 				(font
