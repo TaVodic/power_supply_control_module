@@ -75,15 +75,19 @@ void setup() {
 void loop() {
 
   /*uint16_t tcon = MCP_1.DigitalPotReadTconRegister();
-  Serial.print("MCP_1 TCON= ");
+  Serial.print("MCP_1 TCON= "); //511
   Serial.println(tcon);
   delay(1000);*/
 
-  return;
-
   int32_t newPosition_V = ENC_V.read();
   if (newPosition_V != oldPosition_V) {
-    oldPosition_V = newPosition_V;
+    /*int32_t diff = newPosition_V - oldPosition_V;
+    if (state_V == COARSE) {      
+      uint16_t wiper = MCP_1.DigitalPotReadWiperPosition(0);
+      MCP_1.DigitalPotSetWiperPosition(0, diff * COARSE_RES + wiper);
+      oldPosition_V = newPosition_V;
+    }*/
+    
     Serial.print("V: ");
     Serial.println(newPosition_V);
     /*dispsniff_poll(&voltage, &current, &power);
@@ -94,18 +98,16 @@ void loop() {
     Serial.print("  W=");
     Serial.println(power);*/
   }
-  int32_t newPosition_C = ENC_C.read();
-  if (newPosition_C != oldPosition_C) {
-    oldPosition_C = newPosition_C;
-    Serial.print("C: ");
-    Serial.println(newPosition_C);
-    /*dispsniff_poll(&voltage, &current, &power);
-    Serial.print("V=");
-    Serial.print(voltage);
-    Serial.print("  A=");
-    Serial.print(current);
-    Serial.print("  W=");
-    Serial.println(power);*/
+
+  if (state_V == FINE) {
+    digitalWrite(pin_LED_V, HIGH);
+  } else {
+    digitalWrite(pin_LED_V, LOW);
+  }
+  if (state_C == FINE) {
+    digitalWrite(pin_LED_C, HIGH);
+  } else {
+    digitalWrite(pin_LED_C, LOW);
   }
 }
 

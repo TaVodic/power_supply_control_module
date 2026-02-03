@@ -5,9 +5,10 @@
 extern "C" {
 #endif
 
-#define READ_DPIN(dp) ( *portInputRegister(digitalPinToPort(dp)) & digitalPinToBitMask(dp) )
+#define READ_DPIN(dp) (*portInputRegister(digitalPinToPort(dp)) & digitalPinToBitMask(dp))
 
 #define SW_DEBOUNCE_MS 80u
+#define COARSE_RES     2 // 1 ENC step = X MCP steps
 
 #define pin_MCP_CS1 9  // PB1
 #define pin_MCP_CS2 10 // PB2

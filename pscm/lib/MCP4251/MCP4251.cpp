@@ -51,7 +51,7 @@ void MCP4251::DigitalPotWiperDecrement(bool potNum)
     ::digitalWrite(_slaveSelectPin, HIGH);
 }
 
-void MCP4251::DigitalPotSetWiperPosition(bool potNum, unsigned int value)
+void MCP4251::DigitalPotSetWiperPosition(bool potNum, uint16_t value)
 {
     byte cmdByte = B00000000;
     byte dataByte = B00000000;
