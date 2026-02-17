@@ -6,7 +6,7 @@
 #include <Arduino.h>
 #include <stdint.h>
 
-// #define MAIN_DEBUG
+#define MAIN_DEBUG
 
 MCP4251 MCP_1(pin_MCP_CS1);
 MCP4251 MCP_2(pin_MCP_CS2);
@@ -20,18 +20,18 @@ uint16_t voltage = 0;
 uint16_t current = 0;
 uint16_t power = 0;
 
-uint8_t sw_V_oldState = 1;
-uint16_t sw_V_lastMillis = 0;
-uint8_t sw_C_oldState = 1;
-uint16_t sw_C_lastMillis = 0;
+volatile uint8_t sw_V_oldState = 1;
+volatile uint32_t sw_V_lastMillis = 0;
+volatile uint8_t sw_C_oldState = 1;
+volatile uint32_t sw_C_lastMillis = 0;
 
 enum state_t {
   FINE,
   COARSE
 };
 
-enum state_t state_V = COARSE;
-enum state_t state_C = COARSE;
+volatile enum state_t state_V = COARSE;
+volatile enum state_t state_C = COARSE;
 
 void io_init() {
   pinMode(pin_LED_V, OUTPUT);
@@ -70,8 +70,18 @@ void setup() {
     Serial.println("ENC_C init failed: only PD4,PD5,PD6,PD7 are supported!");
   }
   dispsniff_begin();
+
+  for (uint8_t i = 0; i < 3; i++) {
+    digitalWrite(pin_LED_V, HIGH);
+    digitalWrite(pin_LED_C, HIGH);
+    delay(100);
+    digitalWrite(pin_LED_V, LOW);
+    digitalWrite(pin_LED_C, LOW);
+    delay(100);
+  }
 }
 
+uint16_t cMill;
 void loop() {
 
   /*uint16_t tcon = MCP_1.DigitalPotReadTconRegister();
@@ -81,15 +91,16 @@ void loop() {
 
   int32_t newPosition_V = ENC_V.read();
   if (newPosition_V != oldPosition_V) {
+    Serial.print("V: ");
+    Serial.println(newPosition_V);
+    oldPosition_V = newPosition_V;
+    
     /*int32_t diff = newPosition_V - oldPosition_V;
-    if (state_V == COARSE) {      
+    if (state_V == COARSE) {
       uint16_t wiper = MCP_1.DigitalPotReadWiperPosition(0);
       MCP_1.DigitalPotSetWiperPosition(0, diff * COARSE_RES + wiper);
       oldPosition_V = newPosition_V;
-    }*/
-    
-    Serial.print("V: ");
-    Serial.println(newPosition_V);
+    }*/    
     /*dispsniff_poll(&voltage, &current, &power);
     Serial.print("V=");
     Serial.print(voltage);
@@ -117,7 +128,7 @@ ISR(PCINT1_vect) { // max 10us
 #endif
 
   if (!READ_DPIN(pin_SW_V) && sw_V_oldState) {
-    if (millis() > SW_DEBOUNCE_MS + sw_V_lastMillis) {
+    if (millis() > BTN_DEBOUNCE_MS + sw_V_lastMillis) {
       state_V = (state_V == COARSE) ? FINE : COARSE;
       sw_V_oldState = 0;
       sw_V_lastMillis = millis();
@@ -128,7 +139,7 @@ ISR(PCINT1_vect) { // max 10us
   }
 
   if (!READ_DPIN(pin_SW_C) && sw_C_oldState) {
-    if (millis() > SW_DEBOUNCE_MS + sw_C_lastMillis) {
+    if (millis() > BTN_DEBOUNCE_MS + sw_C_lastMillis) {
       state_C = (state_C == COARSE) ? FINE : COARSE;
 #ifdef MAIN_DEBUG
       PORTB ^= (1u << PB0);

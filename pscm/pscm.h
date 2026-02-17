@@ -7,7 +7,7 @@ extern "C" {
 
 #define READ_DPIN(dp) (*portInputRegister(digitalPinToPort(dp)) & digitalPinToBitMask(dp))
 
-#define SW_DEBOUNCE_MS 80u
+#define BTN_DEBOUNCE_MS 200
 #define COARSE_RES     2 // 1 ENC step = X MCP steps
 
 #define pin_MCP_CS1 9  // PB1
@@ -33,3 +33,6 @@ extern "C" {
 #endif
 
 #endif
+
+// white - MCU TX
+// green - MCU RX

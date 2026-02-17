@@ -203,7 +203,7 @@
 			)
 		)
 		(property "Value" "1K"
-			(at 0 1.83 90)
+			(at 3.15 0.1 180)
 			(layer "F.Fab")
 			(uuid "6b172a9d-9fc5-49b5-bfa8-87d0ee060975")
 			(effects
@@ -954,7 +954,7 @@
 			)
 		)
 		(property "Value" "1uF"
-			(at 0 1.85 0)
+			(at -1.15 1.85 0)
 			(layer "F.Fab")
 			(uuid "9175fc91-65bd-4a35-a94f-605dab712209")
 			(effects
@@ -1108,7 +1108,7 @@
 			)
 		)
 		(property "Value" "22pF"
-			(at 0 1.85 0)
+			(at 0.4 -2 0)
 			(layer "F.Fab")
 			(uuid "d3f8202a-ccf4-4bde-9a22-329e7a73d5ec")
 			(effects
@@ -1262,7 +1262,7 @@
 			)
 		)
 		(property "Value" "100nF"
-			(at 0 1.85 0)
+			(at 2.45 2 0)
 			(layer "F.Fab")
 			(uuid "7f44f5ac-4a0f-4db6-aca1-38c50afdea9a")
 			(effects
@@ -1416,7 +1416,7 @@
 			)
 		)
 		(property "Value" "MCP4251-103E-SL"
-			(at 0 5.28 0)
+			(at 0.925 -3.36 0)
 			(layer "F.Fab")
 			(uuid "e51a788b-556a-4fe4-836b-df3e3c46584e")
 			(effects
@@ -1854,7 +1854,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 0 1.83 0)
+			(at -0.05 -2.15 0)
 			(layer "F.Fab")
 			(uuid "9bb43523-7143-4b44-9cbc-e27d021da0a2")
 			(effects
@@ -2008,7 +2008,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 0 1.83 0)
+			(at -0.95 -1.85 0)
 			(layer "F.Fab")
 			(uuid "de1a57c4-e6ee-45fd-ab2b-a54b7bdf4b5b")
 			(effects
@@ -2584,7 +2584,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 0 1.83 0)
+			(at -4.05 0.1 0)
 			(layer "F.Fab")
 			(uuid "4fc29219-308c-48f3-a4ef-d8430d23af45")
 			(effects
@@ -2990,6 +2990,7 @@
 		(property "Value" "ATmega328PB-A"
 			(at 0 5.85 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "333c751d-ace2-4f17-be08-803f32d6fc4b")
 			(effects
 				(font
@@ -4142,7 +4143,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 0 1.83 90)
+			(at -0.2 2.95 180)
 			(layer "F.Fab")
 			(uuid "505fc9d9-7e59-48eb-94f5-e274682393f2")
 			(effects
@@ -4412,6 +4413,7 @@
 		(property "Value" "MCP4251-103E-SL"
 			(at 0 5.28 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "e3b6f31a-7e12-45f5-a509-bd5ffae2aeb5")
 			(effects
 				(font
@@ -4848,7 +4850,7 @@
 			)
 		)
 		(property "Value" "100nF"
-			(at 0 1.85 0)
+			(at 5.15 0.29 0)
 			(layer "F.Fab")
 			(uuid "f13f6eae-5a54-4c46-8035-4ca6b1cd7ab4")
 			(effects
@@ -5282,7 +5284,7 @@
 			)
 		)
 		(property "Value" "10uF"
-			(at 0 1.85 90)
+			(at 3.25 0 180)
 			(layer "F.Fab")
 			(uuid "1cdff9b9-0f7a-483a-871d-29d5161bcbc6")
 			(effects
@@ -5438,8 +5440,9 @@
 			)
 		)
 		(property "Value" "MountingHole"
-			(at 0 3.8 0)
+			(at -1.7 14.75 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "89cb3a7a-9a5f-4b93-af3e-00d9edae4b50")
 			(effects
 				(font
@@ -5550,7 +5553,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 0 1.83 0)
+			(at -4.1 0.18 0)
 			(layer "F.Fab")
 			(uuid "8a94902e-ce2a-4329-888a-e083beb20935")
 			(effects
@@ -5704,7 +5707,7 @@
 			)
 		)
 		(property "Value" "2k"
-			(at 0 1.83 0)
+			(at 0.15 2.2 0)
 			(layer "F.Fab")
 			(uuid "d9212c83-5d50-4eac-a8da-cac872b14bb2")
 			(effects
@@ -6277,7 +6280,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 0 1.83 0)
+			(at 0.1 -1.8 0)
 			(layer "F.Fab")
 			(uuid "ea0e3006-826b-46ac-8327-f3a083d5ec79")
 			(effects
