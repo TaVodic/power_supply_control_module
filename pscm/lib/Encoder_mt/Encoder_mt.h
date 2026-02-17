@@ -7,7 +7,7 @@
 
 #include "Arduino.h"
 
-// #define ENC_DEBUG
+#define ENC_DEBUG
 
 typedef struct { // Do not reorder fields; asm depends on this layout!
   volatile uint8_t *pin1_register;

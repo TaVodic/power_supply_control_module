@@ -104,153 +104,126 @@ ISR(PCINT2_vect) { // max 9.5us
 
 void Encoder::update(Encoder_internal_state_t *arg) {
   asm volatile(
-      "ld	r30, X+"
-      "\n\t"
-      "ld	r31, X+"
-      "\n\t"
-      "ld	r24, Z"
-      "\n\t" // r24 = pin1 input
-      "ld	r30, X+"
-      "\n\t"
-      "ld	r31, X+"
-      "\n\t"
-      "ld	r25, Z"
-      "\n\t" // r25 = pin2 input
-      "ld	r30, X+"
-      "\n\t" // r30 = pin1 mask
-      "ld	r31, X+"
-      "\n\t" // r31 = pin2 mask
-      "ld	r22, X"
-      "\n\t" // r22 = state
-      "andi	r22, 3"
-      "\n\t"
-      "and	r24, r30"
-      "\n\t"
-      "breq	L%=1"
-      "\n\t" // if (pin1)
-      "ori	r22, 4"
-      "\n\t" //	state |= 4
-      "L%=1:"
-      "and	r25, r31"
-      "\n\t"
-      "breq	L%=2"
-      "\n\t" // if (pin2)
-      "ori	r22, 8"
-      "\n\t" //	state |= 8
-      "L%=2:"
-      "ldi	r30, lo8(pm(L%=table))"
-      "\n\t"
-      "ldi	r31, hi8(pm(L%=table))"
-      "\n\t"
-      "add	r30, r22"
-      "\n\t"
-      "adc	r31, __zero_reg__"
-      "\n\t"
-      "asr	r22"
-      "\n\t"
-      "asr	r22"
-      "\n\t"
-      "st	X+, r22"
-      "\n\t" // store new state
-      "ld	r22, X+"
-      "\n\t"
-      "ld	r23, X+"
-      "\n\t"
-      "ld	r24, X+"
-      "\n\t"
-      "ld	r25, X+"
-      "\n\t"
-      "ijmp"
-      "\n\t" // jumps to update_finishup()
-             // TODO move this table to another static function,
-             // so it doesn't get needlessly duplicated.  Easier
-             // said than done, due to linker issues and inlining
-      "L%=table:"
-      "\n\t"
-      "rjmp	L%=end"
-      "\n\t" // 0
-      "rjmp	L%=plus1"
-      "\n\t" // 1
-      "rjmp	L%=minus1"
-      "\n\t" // 2
-      "rjmp	L%=plus2"
-      "\n\t" // 3
-      "rjmp	L%=minus1"
-      "\n\t" // 4
-      "rjmp	L%=end"
-      "\n\t" // 5
-      "rjmp	L%=minus2"
-      "\n\t" // 6
-      "rjmp	L%=plus1"
-      "\n\t" // 7
-      "rjmp	L%=plus1"
-      "\n\t" // 8
-      "rjmp	L%=minus2"
-      "\n\t" // 9
-      "rjmp	L%=end"
-      "\n\t" // 10
-      "rjmp	L%=minus1"
-      "\n\t" // 11
-      "rjmp	L%=plus2"
-      "\n\t" // 12
-      "rjmp	L%=minus1"
-      "\n\t" // 13
-      "rjmp	L%=plus1"
-      "\n\t" // 14
-      "rjmp	L%=end"
-      "\n\t" // 15
-      "L%=minus2:"
-      "\n\t"
-      "subi	r22, 2"
-      "\n\t"
-      "sbci	r23, 0"
-      "\n\t"
-      "sbci	r24, 0"
-      "\n\t"
-      "sbci	r25, 0"
-      "\n\t"
-      "rjmp	L%=store"
-      "\n\t"
-      "L%=minus1:"
-      "\n\t"
-      "subi	r22, 1"
-      "\n\t"
-      "sbci	r23, 0"
-      "\n\t"
-      "sbci	r24, 0"
-      "\n\t"
-      "sbci	r25, 0"
-      "\n\t"
-      "rjmp	L%=store"
-      "\n\t"
-      "L%=plus2:"
-      "\n\t"
-      "subi	r22, 254"
-      "\n\t"
-      "rjmp	L%=z"
-      "\n\t"
-      "L%=plus1:"
-      "\n\t"
-      "subi	r22, 255"
-      "\n\t"
-      "L%=z:"
-      "sbci	r23, 255"
-      "\n\t"
-      "sbci	r24, 255"
-      "\n\t"
-      "sbci	r25, 255"
-      "\n\t"
-      "L%=store:"
-      "\n\t"
-      "st	-X, r25"
-      "\n\t"
-      "st	-X, r24"
-      "\n\t"
-      "st	-X, r23"
-      "\n\t"
-      "st	-X, r22"
-      "\n\t"
-      "L%=end:"
-      "\n" : : "x"(arg) : "r22",
-                          "r23", "r24", "r25", "r30", "r31");
+      // X points to Encoder_internal_state_t
+      // Layout (as used here) is effectively:
+      //   [pin1_port_ptr][pin2_port_ptr][pin1_mask][pin2_mask][state][position (4 bytes little-endian)]
+      //
+      // We read the two input pins, build a 4-bit index:
+      //   index = (prevAB in bits0..1) | (currA<<2) | (currB<<3)
+      // then use a jump table to decide whether to change position.
+      //
+      // This modified version counts ONLY when currAB becomes 00,
+      // giving 1 count per full 4-step quadrature cycle.
+
+      // ---- Load pin1 port address from struct (2 bytes) into Z ----
+      "ld  r30, X+               \n\t" // r30 = low byte of pin1 port address
+      "ld  r31, X+               \n\t" // r31 = high byte of pin1 port address
+      "ld  r24, Z                \n\t" // r24 = *pin1_port (raw port input)
+
+      // ---- Load pin2 port address from struct (2 bytes) into Z ----
+      "ld  r30, X+               \n\t" // r30 = low byte of pin2 port address
+      "ld  r31, X+               \n\t" // r31 = high byte of pin2 port address
+      "ld  r25, Z                \n\t" // r25 = *pin2_port (raw port input)
+
+      // ---- Load masks and previous state ----
+      "ld  r30, X+               \n\t" // r30 = pin1 mask
+      "ld  r31, X+               \n\t" // r31 = pin2 mask
+      "ld  r22, X                \n\t" // r22 = state (we only use bits0..1)
+
+      // Keep only previous AB in bits0..1
+      "andi  r22, 3              \n\t" // r22 = prevAB (0..3)
+
+      // ---- Apply masks and OR current A/B into r22 (bits2..3) ----
+      "and   r24, r30            \n\t" // r24 = pin1 & mask
+      "breq  L%=A0               \n\t" // if zero -> A=0
+      "ori   r22, 4              \n\t" // else set bit2 => currA=1
+      "L%=A0:                    \n\t"
+
+      "and   r25, r31            \n\t" // r25 = pin2 & mask
+      "breq  L%=B0               \n\t" // if zero -> B=0
+      "ori   r22, 8              \n\t" // else set bit3 => currB=1
+      "L%=B0:                    \n\t"
+
+      // ---- Jump-table dispatch ----
+      // Z = &table
+      "ldi   r30, lo8(pm(L%=table)) \n\t"
+      "ldi   r31, hi8(pm(L%=table)) \n\t"
+
+      // Add index (0..15) to table base so IJMP lands on the right RJMP
+      "add   r30, r22            \n\t"
+      "adc   r31, __zero_reg__   \n\t"
+
+      // ---- Update stored state to current AB ----
+      // currAB is in bits2..3 of r22; shift down into bits0..1
+      "asr   r22                 \n\t"
+      "asr   r22                 \n\t"
+      "st    X+, r22             \n\t" // store new state (currAB)
+
+      // ---- Load 4-byte position into r22..r25 ----
+      "ld    r22, X+             \n\t"
+      "ld    r23, X+             \n\t"
+      "ld    r24, X+             \n\t"
+      "ld    r25, X+             \n\t"
+
+      // ---- Dispatch to one of the RJMPs below, then fall into store ----
+      "ijmp                      \n\t"
+
+      // =============================================================
+      // Jump table (16 entries):
+      // index = prevAB | (currAB<<2)
+      //
+      // We only count when currAB == 00 and the transition is valid:
+      //   prev=01 curr=00  (index=1) => +1
+      //   prev=10 curr=00  (index=2) => -1
+      // Everything else => 0 (no count)
+      // =============================================================
+      "L%=table:                 \n\t"
+      "rjmp  L%=end              \n\t" // 0:  00->00  no move
+      "rjmp  L%=plus1            \n\t" // 1:  01->00  +1 (count here)
+      "rjmp  L%=minus1           \n\t" // 2:  10->00  -1 (count here)
+      "rjmp  L%=end              \n\t" // 3:  11->00  (skip/bounce) ignore
+
+      "rjmp  L%=end              \n\t" // 4:  00->01  ignore
+      "rjmp  L%=end              \n\t" // 5:  01->01  ignore
+      "rjmp  L%=end              \n\t" // 6:  10->01  ignore
+      "rjmp  L%=end              \n\t" // 7:  11->01  ignore
+
+      "rjmp  L%=end              \n\t" // 8:  00->10  ignore
+      "rjmp  L%=end              \n\t" // 9:  01->10  ignore
+      "rjmp  L%=end              \n\t" // 10: 10->10  ignore
+      "rjmp  L%=end              \n\t" // 11: 11->10  ignore
+
+      "rjmp  L%=end              \n\t" // 12: 00->11  ignore
+      "rjmp  L%=end              \n\t" // 13: 01->11  ignore
+      "rjmp  L%=end              \n\t" // 14: 10->11  ignore
+      "rjmp  L%=end              \n\t" // 15: 11->11  ignore
+
+      // ---- position -= 1 ----
+      "L%=minus1:                \n\t"
+      "subi  r22, 1              \n\t"
+      "sbci  r23, 0              \n\t"
+      "sbci  r24, 0              \n\t"
+      "sbci  r25, 0              \n\t"
+      "rjmp  L%=store            \n\t"
+
+      // ---- position += 1 ----
+      "L%=plus1:                 \n\t"
+      "subi  r22, 255            \n\t" // add 1 (two's complement trick)
+      "sbci  r23, 255            \n\t"
+      "sbci  r24, 255            \n\t"
+      "sbci  r25, 255            \n\t"
+
+      // ---- Store updated position back (pre-decrement X to original position field) ----
+      "L%=store:                 \n\t"
+      "st   -X, r25              \n\t"
+      "st   -X, r24              \n\t"
+      "st   -X, r23              \n\t"
+      "st   -X, r22              \n\t"
+
+      "L%=end:                   \n\t"
+      "\n"
+      :
+      : "x"(arg)
+      : "r22", "r23", "r24", "r25", "r30", "r31"
+  );
 }

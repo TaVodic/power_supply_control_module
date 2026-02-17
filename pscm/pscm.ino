@@ -6,7 +6,7 @@
 #include <Arduino.h>
 #include <stdint.h>
 
-#define MAIN_DEBUG
+// #define MAIN_DEBUG
 
 MCP4251 MCP_1(pin_MCP_CS1);
 MCP4251 MCP_2(pin_MCP_CS2);
@@ -63,10 +63,10 @@ void setup() {
   Serial.println();
   Serial.println("TM1640 sniff start ");
 
-  if (!ENC_V.begin(pin_ENC_V_A, pin_ENC_V_B)) {
+  if (!ENC_V.begin(pin_ENC_V_B, pin_ENC_V_A)) {
     Serial.println("ENC_V init failed: only PD4,PD5,PD6,PD7 are supported!");
   }
-  if (!ENC_C.begin(pin_ENC_C_A, pin_ENC_C_B)) {
+  if (!ENC_C.begin(pin_ENC_C_B, pin_ENC_C_A)) {
     Serial.println("ENC_C init failed: only PD4,PD5,PD6,PD7 are supported!");
   }
   dispsniff_begin();
@@ -89,25 +89,32 @@ void loop() {
   Serial.println(tcon);
   delay(1000);*/
 
+  /*int32_t diff = newPosition_V - oldPosition_V;
+    if (state_V == COARSE) {
+      uint16_t wiper = MCP_1.DigitalPotReadWiperPosition(0);
+      MCP_1.DigitalPotSetWiperPosition(0, diff * COARSE_RES + wiper);
+      oldPosition_V = newPosition_V;
+    }*/
+  /*dispsniff_poll(&voltage, &current, &power);
+  Serial.print("V=");
+  Serial.print(voltage);
+  Serial.print("  A=");
+  Serial.print(current);
+  Serial.print("  W=");
+  Serial.println(power);*/
+
   int32_t newPosition_V = ENC_V.read();
   if (newPosition_V != oldPosition_V) {
     Serial.print("V: ");
     Serial.println(newPosition_V);
     oldPosition_V = newPosition_V;
-    
-    /*int32_t diff = newPosition_V - oldPosition_V;
-    if (state_V == COARSE) {
-      uint16_t wiper = MCP_1.DigitalPotReadWiperPosition(0);
-      MCP_1.DigitalPotSetWiperPosition(0, diff * COARSE_RES + wiper);
-      oldPosition_V = newPosition_V;
-    }*/    
-    /*dispsniff_poll(&voltage, &current, &power);
-    Serial.print("V=");
-    Serial.print(voltage);
-    Serial.print("  A=");
-    Serial.print(current);
-    Serial.print("  W=");
-    Serial.println(power);*/
+  }
+
+  int32_t newPosition_C = ENC_C.read();
+  if (newPosition_C != oldPosition_C) {
+    Serial.print("C: ");
+    Serial.println(newPosition_C);
+    oldPosition_C = newPosition_C;
   }
 
   if (state_V == FINE) {
