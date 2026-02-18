@@ -8,7 +8,8 @@ extern "C" {
 #define READ_DPIN(dp) (*portInputRegister(digitalPinToPort(dp)) & digitalPinToBitMask(dp))
 
 #define BTN_DEBOUNCE_MS 200
-#define COARSE_RES     2 // 1 ENC step = X MCP steps
+#define COARSE_RES      4
+#define WIPER_MAX_VAL   256
 
 #define pin_MCP_CS1 9  // PB1
 #define pin_MCP_CS2 10 // PB2

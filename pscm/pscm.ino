@@ -6,32 +6,38 @@
 #include <Arduino.h>
 #include <stdint.h>
 
-// #define MAIN_DEBUG
+#define MAIN_DEBUG
 
 MCP4251 MCP_1(pin_MCP_CS1);
 MCP4251 MCP_2(pin_MCP_CS2);
 Encoder ENC_V;
 Encoder ENC_C;
 
-int32_t oldPosition_V = 0;
-int32_t oldPosition_C = 0;
+uint16_t meas_voltage = 0;
+uint16_t meas_current = 0;
+uint16_t meas_power = 0;
 
-uint16_t voltage = 0;
-uint16_t current = 0;
-uint16_t power = 0;
-
-volatile uint8_t sw_V_oldState = 1;
-volatile uint32_t sw_V_lastMillis = 0;
-volatile uint8_t sw_C_oldState = 1;
-volatile uint32_t sw_C_lastMillis = 0;
-
-enum state_t {
+enum mode_t : uint8_t {
   FINE,
   COARSE
 };
 
-volatile enum state_t state_V = COARSE;
-volatile enum state_t state_C = COARSE;
+enum MCP_adddr : uint8_t {
+  CURRENT = 0,
+  VOLTAGE = 1,
+};
+
+struct el_quantity_t {
+  Encoder *ENC;
+  MCP_adddr mcp_addr;
+  int32_t old_enc_position = 0;
+  volatile uint8_t btn_oldState = 1;
+  volatile uint32_t btn_lastMillis = 0;
+  volatile mode_t mode = COARSE;
+};
+
+el_quantity_t Voltage = {&ENC_V, VOLTAGE};
+el_quantity_t Current = {&ENC_C, CURRENT};
 
 void io_init() {
   pinMode(pin_LED_V, OUTPUT);
@@ -54,8 +60,8 @@ void setup() {
   MCP_2.begin();
   MCP_1.DigitalPotSetWiperMin(0);
   MCP_1.DigitalPotSetWiperMin(1);
-  MCP_2.DigitalPotSetWiperMin(0);
-  MCP_2.DigitalPotSetWiperMin(1);
+  MCP_2.DigitalPotSetWiperMax(0); // short-circuit DPOT2
+  MCP_2.DigitalPotSetWiperMax(1); // short-circuit DPOT2
 
   io_init();
 
@@ -63,10 +69,10 @@ void setup() {
   Serial.println();
   Serial.println("TM1640 sniff start ");
 
-  if (!ENC_V.begin(pin_ENC_V_B, pin_ENC_V_A)) {
+  if (!Voltage.ENC->begin(pin_ENC_V_B, pin_ENC_V_A)) {
     Serial.println("ENC_V init failed: only PD4,PD5,PD6,PD7 are supported!");
   }
-  if (!ENC_C.begin(pin_ENC_C_B, pin_ENC_C_A)) {
+  if (!Current.ENC->begin(pin_ENC_C_B, pin_ENC_C_A)) {
     Serial.println("ENC_C init failed: only PD4,PD5,PD6,PD7 are supported!");
   }
   dispsniff_begin();
@@ -81,51 +87,67 @@ void setup() {
   }
 }
 
-uint16_t cMill;
 void loop() {
 
-  /*uint16_t tcon = MCP_1.DigitalPotReadTconRegister();
-  Serial.print("MCP_1 TCON= "); //511
-  Serial.println(tcon);
-  delay(1000);*/
-
-  /*int32_t diff = newPosition_V - oldPosition_V;
-    if (state_V == COARSE) {
-      uint16_t wiper = MCP_1.DigitalPotReadWiperPosition(0);
-      MCP_1.DigitalPotSetWiperPosition(0, diff * COARSE_RES + wiper);
-      oldPosition_V = newPosition_V;
-    }*/
-  /*dispsniff_poll(&voltage, &current, &power);
+  /*dispsniff_poll(&meas_voltage, &meas_current, &meas_power);
   Serial.print("V=");
-  Serial.print(voltage);
+  Serial.print(meas_voltage);
   Serial.print("  A=");
-  Serial.print(current);
+  Serial.print(meas_current);
   Serial.print("  W=");
-  Serial.println(power);*/
+  Serial.println(meas_power);*/
 
-  int32_t newPosition_V = ENC_V.read();
-  if (newPosition_V != oldPosition_V) {
-    Serial.print("V: ");
-    Serial.println(newPosition_V);
-    oldPosition_V = newPosition_V;
-  }
+  /*static uint8_t couter = 0;
+  Serial.print("Val: ");
+  Serial.println(couter);
+  MCP_1.DigitalPotSetWiperPosition(1, couter++);
+  Serial.print("Wiper: ");
+  Serial.println(MCP_1.DigitalPotReadWiperPosition(1));
+  delay(500);*/
 
-  int32_t newPosition_C = ENC_C.read();
-  if (newPosition_C != oldPosition_C) {
-    Serial.print("C: ");
-    Serial.println(newPosition_C);
-    oldPosition_C = newPosition_C;
-  }
+  set_el_quantity(&Voltage);
+  set_el_quantity(&Current);
 
-  if (state_V == FINE) {
+  if (Voltage.mode == FINE) {
     digitalWrite(pin_LED_V, HIGH);
   } else {
     digitalWrite(pin_LED_V, LOW);
   }
-  if (state_C == FINE) {
+  if (Current.mode == FINE) {
     digitalWrite(pin_LED_C, HIGH);
   } else {
     digitalWrite(pin_LED_C, LOW);
+  }
+}
+
+void set_el_quantity(el_quantity_t *quantity) {
+  int32_t newPosition = quantity->ENC->read();
+  int32_t diff = newPosition - quantity->old_enc_position;
+  static uint16_t wiper = MCP_1.DigitalPotReadWiperPosition(quantity->mcp_addr);
+  if (diff != 0) {
+    if (quantity->mode == COARSE) {
+      diff *= COARSE_RES;
+    }
+#ifdef MAIN_DEBUG
+    Serial.print("diff: ");
+    Serial.println(diff);
+    Serial.print("wiper read: ");
+    Serial.println(wiper);
+#endif
+    int32_t tempWiper = (int32_t)wiper + diff; // TODO: wiper get stuc when we chnage mode
+    if (tempWiper < 0) {
+      wiper = 0;
+    } else if (tempWiper > WIPER_MAX_VAL) {
+      wiper = WIPER_MAX_VAL;
+    } else {
+      wiper = (uint16_t)tempWiper;
+    }
+#ifdef MAIN_DEBUG
+    Serial.print("wiper: ");
+    Serial.println(wiper);
+#endif
+    MCP_1.DigitalPotSetWiperPosition(quantity->mcp_addr, wiper);
+    quantity->old_enc_position = newPosition;
   }
 }
 
@@ -134,29 +156,29 @@ ISR(PCINT1_vect) { // max 10us
   PORTC |= (1u << PC0);
 #endif
 
-  if (!READ_DPIN(pin_SW_V) && sw_V_oldState) {
-    if (millis() > BTN_DEBOUNCE_MS + sw_V_lastMillis) {
-      state_V = (state_V == COARSE) ? FINE : COARSE;
-      sw_V_oldState = 0;
-      sw_V_lastMillis = millis();
+  if (!READ_DPIN(pin_SW_V) && Voltage.btn_oldState) {
+    if (millis() > BTN_DEBOUNCE_MS + Voltage.btn_lastMillis) {
+      Voltage.mode = (Voltage.mode == COARSE) ? FINE : COARSE;
+      Voltage.btn_oldState = 0;
+      Voltage.btn_lastMillis = millis();
     }
-  } else if (READ_DPIN(pin_SW_V) && !sw_V_oldState) {
-    sw_V_oldState = 1;
-    sw_V_lastMillis = millis();
+  } else if (READ_DPIN(pin_SW_V) && !Voltage.btn_oldState) {
+    Voltage.btn_oldState = 1;
+    Voltage.btn_lastMillis = millis();
   }
 
-  if (!READ_DPIN(pin_SW_C) && sw_C_oldState) {
-    if (millis() > BTN_DEBOUNCE_MS + sw_C_lastMillis) {
-      state_C = (state_C == COARSE) ? FINE : COARSE;
+  if (!READ_DPIN(pin_SW_C) && Current.btn_oldState) {
+    if (millis() > BTN_DEBOUNCE_MS + Current.btn_lastMillis) {
+      Current.mode = (Current.mode == COARSE) ? FINE : COARSE;
 #ifdef MAIN_DEBUG
       PORTB ^= (1u << PB0);
 #endif
-      sw_C_oldState = 0;
-      sw_C_lastMillis = millis();
+      Current.btn_oldState = 0;
+      Current.btn_lastMillis = millis();
     }
-  } else if (READ_DPIN(pin_SW_C) && !sw_C_oldState) {
-    sw_C_oldState = 1;
-    sw_C_lastMillis = millis();
+  } else if (READ_DPIN(pin_SW_C) && !Current.btn_oldState) {
+    Current.btn_oldState = 1;
+    Current.btn_lastMillis = millis();
   }
 #ifdef MAIN_DEBUG
   PORTC &= ~(1u << PC0);

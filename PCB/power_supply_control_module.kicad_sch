@@ -4463,6 +4463,16 @@
 		)
 		(uuid "4b20f208-8db2-4444-a3ea-a6b4bd69df8b")
 	)
+	(text "Wiper set to x00 -> W-B short circuit "
+		(exclude_from_sim no)
+		(at 254.762 87.376 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "4d3e0124-cd4c-4c3f-a75b-769882a9fa57")
+	)
 	(text "Pull-up to disconnect\nSPI on boot-up"
 		(exclude_from_sim no)
 		(at 157.734 93.472 0)
