@@ -5,6 +5,7 @@
 
 #include <Arduino.h>
 #include <stdint.h>
+#include <util/atomic.h>
 
 #define MAIN_DEBUG
 
@@ -30,7 +31,7 @@ enum MCP_adddr : uint8_t {
 struct el_quantity_t {
   Encoder *ENC;
   MCP_adddr mcp_addr;
-  int32_t old_enc_position = 0;
+  int16_t old_enc_position = 0;
   volatile uint8_t btn_oldState = 1;
   volatile uint32_t btn_lastMillis = 0;
   volatile mode_t mode = COARSE;
@@ -85,6 +86,17 @@ void setup() {
     digitalWrite(pin_LED_C, LOW);
     delay(100);
   }
+
+  MCP_1.DigitalPotSetWiperMin(0);
+  MCP_1.DigitalPotSetWiperMin(1);
+  MCP_2.DigitalPotSetWiperMax(0); // short-circuit DPOT2
+  MCP_2.DigitalPotSetWiperMax(1); // short-circuit DPOT2
+
+  int16_t wiper = MCP_1.DigitalPotReadWiperPosition(Voltage.mcp_addr);
+#ifdef MAIN_DEBUG
+  Serial.print("init wiper: ");
+  Serial.println(wiper);
+#endif
 }
 
 void loop() {
@@ -96,14 +108,6 @@ void loop() {
   Serial.print(meas_current);
   Serial.print("  W=");
   Serial.println(meas_power);*/
-
-  /*static uint8_t couter = 0;
-  Serial.print("Val: ");
-  Serial.println(couter);
-  MCP_1.DigitalPotSetWiperPosition(1, couter++);
-  Serial.print("Wiper: ");
-  Serial.println(MCP_1.DigitalPotReadWiperPosition(1));
-  delay(500);*/
 
   set_el_quantity(&Voltage);
   set_el_quantity(&Current);
@@ -121,26 +125,25 @@ void loop() {
 }
 
 void set_el_quantity(el_quantity_t *quantity) {
-  int32_t newPosition = quantity->ENC->read();
-  int32_t diff = newPosition - quantity->old_enc_position;
-  static uint16_t wiper = MCP_1.DigitalPotReadWiperPosition(quantity->mcp_addr);
+  int16_t newPosition = (int16_t)quantity->ENC->read();
+  int16_t diff = newPosition - quantity->old_enc_position;
+  int16_t tempWiper;
+  int16_t wiper = MCP_1.DigitalPotReadWiperPosition(quantity->mcp_addr);
   if (diff != 0) {
     if (quantity->mode == COARSE) {
       diff *= COARSE_RES;
     }
-#ifdef MAIN_DEBUG
-    Serial.print("diff: ");
-    Serial.println(diff);
-    Serial.print("wiper read: ");
-    Serial.println(wiper);
-#endif
-    int32_t tempWiper = (int32_t)wiper + diff; // TODO: wiper get stuc when we chnage mode
-    if (tempWiper < 0) {
-      wiper = 0;
-    } else if (tempWiper > WIPER_MAX_VAL) {
-      wiper = WIPER_MAX_VAL;
-    } else {
-      wiper = (uint16_t)tempWiper;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+      tempWiper = wiper + diff; // TODO: wiper get stuc when we chnage mode
+    }
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+      if (tempWiper < 0) {
+        wiper = 0;
+      } else if (tempWiper > WIPER_MAX_VAL) {
+        wiper = WIPER_MAX_VAL;
+      } else {
+        wiper = tempWiper;
+      }
     }
 #ifdef MAIN_DEBUG
     Serial.print("wiper: ");

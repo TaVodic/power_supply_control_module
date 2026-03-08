@@ -201,11 +201,11 @@ void Encoder::update(Encoder_internal_state_t *arg) {
       // ---- position -= 1 ----
       "L%=minus1:                \n\t"
       // Check if r22..r25 == 0. If yes, ignore decrement.
-      "mov   r30, r22            \n\t"
+      /*"mov   r30, r22            \n\t"
       "or    r30, r23            \n\t"
       "or    r30, r24            \n\t"
       "or    r30, r25            \n\t"
-      "breq  L%=end              \n\t" // position already 0 -> do nothing
+      "breq  L%=end              \n\t" // position already 0 -> do nothing*/
 
       // Not zero, so decrement 32-bit value in r22..r25
       "subi  r22, 1              \n\t"
