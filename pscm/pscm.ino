@@ -61,8 +61,8 @@ void setup() {
   MCP_2.begin();
   MCP_1.DigitalPotSetWiperMin(0);
   MCP_1.DigitalPotSetWiperMin(1);
-  MCP_2.DigitalPotSetWiperMax(0); // short-circuit DPOT2
-  MCP_2.DigitalPotSetWiperMax(1); // short-circuit DPOT2
+  MCP_2.DigitalPotSetWiperMin(0); // short-circuit DPOT2
+  MCP_2.DigitalPotSetWiperMin(1); // short-circuit DPOT2
 
   io_init();
 
@@ -89,8 +89,8 @@ void setup() {
 
   MCP_1.DigitalPotSetWiperMin(0);
   MCP_1.DigitalPotSetWiperMin(1);
-  MCP_2.DigitalPotSetWiperMax(0); // short-circuit DPOT2
-  MCP_2.DigitalPotSetWiperMax(1); // short-circuit DPOT2
+  MCP_2.DigitalPotSetWiperMin(0); // short-circuit DPOT2
+  MCP_2.DigitalPotSetWiperMin(1); // short-circuit DPOT2
 
   int16_t wiper = MCP_1.DigitalPotReadWiperPosition(Voltage.mcp_addr);
 #ifdef MAIN_DEBUG
@@ -128,8 +128,19 @@ void set_el_quantity(el_quantity_t *quantity) {
   int16_t newPosition = (int16_t)quantity->ENC->read();
   int16_t diff = newPosition - quantity->old_enc_position;
   int16_t tempWiper;
-  int16_t wiper = MCP_1.DigitalPotReadWiperPosition(quantity->mcp_addr);
+  int16_t wiper_1 = MCP_1.DigitalPotReadWiperPosition(quantity->mcp_addr);
+  int16_t wiper_2 = MCP_2.DigitalPotReadWiperPosition(quantity->mcp_addr);
+  int16_t wiper = wiper_1 + wiper_2;
+
   if (diff != 0) {
+#ifdef MAIN_DEBUG
+    Serial.print("read wiper_1: ");
+    Serial.println(wiper_1);
+    Serial.print("read wiper_2: ");
+    Serial.println(wiper_2);
+    Serial.print("read wiper_sum: ");
+    Serial.println(wiper);
+#endif
     if (quantity->mode == COARSE) {
       diff *= COARSE_RES;
     }
@@ -139,8 +150,8 @@ void set_el_quantity(el_quantity_t *quantity) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
       if (tempWiper < 0) {
         wiper = 0;
-      } else if (tempWiper > WIPER_MAX_VAL) {
-        wiper = WIPER_MAX_VAL;
+      } else if (tempWiper > WIPERS_MAX_VAL) {
+        wiper = WIPERS_MAX_VAL;
       } else {
         wiper = tempWiper;
       }
@@ -149,8 +160,14 @@ void set_el_quantity(el_quantity_t *quantity) {
     Serial.print("wiper: ");
     Serial.println(wiper);
 #endif
-    MCP_1.DigitalPotSetWiperPosition(quantity->mcp_addr, wiper);
     quantity->old_enc_position = newPosition;
+    if (wiper > WIPER_MAX_VAL) {
+      MCP_1.DigitalPotSetWiperMax(quantity->mcp_addr);
+      MCP_2.DigitalPotSetWiperPosition(quantity->mcp_addr, wiper - 256);
+    } else {
+      MCP_1.DigitalPotSetWiperPosition(quantity->mcp_addr, wiper);
+      MCP_2.DigitalPotSetWiperMin(quantity->mcp_addr);
+    }
   }
 }
 
