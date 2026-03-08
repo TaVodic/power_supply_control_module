@@ -89,8 +89,8 @@ void setup() {
 
   MCP_1.DigitalPotSetWiperMin(0);
   MCP_1.DigitalPotSetWiperMin(1);
-  MCP_2.DigitalPotSetWiperMin(0); // short-circuit DPOT2
-  MCP_2.DigitalPotSetWiperMin(1); // short-circuit DPOT2
+  MCP_2.DigitalPotSetWiperMin(0);
+  MCP_2.DigitalPotSetWiperMin(1);
 
   int16_t wiper = MCP_1.DigitalPotReadWiperPosition(Voltage.mcp_addr);
 #ifdef MAIN_DEBUG
@@ -100,14 +100,17 @@ void setup() {
 }
 
 void loop() {
-
-  /*dispsniff_poll(&meas_voltage, &meas_current, &meas_power);
-  Serial.print("V=");
-  Serial.print(meas_voltage);
-  Serial.print("  A=");
-  Serial.print(meas_current);
-  Serial.print("  W=");
-  Serial.println(meas_power);*/
+  dispsniff_poll(&meas_voltage, &meas_current, &meas_power);
+  static uint32_t cmillis = 0;
+  if (millis() > 1000 + cmillis) {    
+    Serial.print("V=");
+    Serial.print(meas_voltage);
+    Serial.print("  A=");
+    Serial.print(meas_current);
+    Serial.print("  W=");
+    Serial.println(meas_power);
+    cmillis = millis();
+  }
 
   set_el_quantity(&Voltage);
   set_el_quantity(&Current);

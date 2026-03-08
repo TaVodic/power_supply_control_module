@@ -9,7 +9,7 @@ extern "C" {
 
 #define BTN_DEBOUNCE_MS 200
 #define COARSE_RES      4
-#define WIPERS_MAX_VAL  256 * 2
+#define WIPERS_MAX_VAL  488 // limited to 30V
 #define WIPER_MAX_VAL   256
 
 #define pin_MCP_CS1 9  // PB1
