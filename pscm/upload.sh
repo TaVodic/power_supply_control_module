@@ -1,7 +1,8 @@
-arduino-cli compile -b MiniCore:avr:328 --libraries ./lib -v --output-dir ./build
-C:/Users/Martin/AppData/Local/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/bin/avrdude              \
+if arduino-cli compile -b MiniCore:avr:328 --libraries ./lib -v --output-dir ./build; 
+then C:/Users/Martin/AppData/Local/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/bin/avrdude         \
     -CC:/Users/Martin/AppData/Local/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/etc/avrdude.conf   \
     -v -V -patmega328pb -cusbasp -Pusb -U lfuse:w:0xFF:m -Uflash:w:build/pscm.ino.hex:i
+fi
 
 #arduino-cli compile -b arduino:avr:nano -v --output-dir ./build
 #C:/Users/Martin/AppData/Local/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/bin/avrdude              \

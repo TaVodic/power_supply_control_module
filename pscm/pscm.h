@@ -11,6 +11,7 @@ extern "C" {
 #define COARSE_RES      4
 #define WIPERS_MAX_VAL  488 // limited to 30V
 #define WIPER_MAX_VAL   256
+#define SER_BUFF_SIZE   20
 
 #define pin_MCP_CS1 9  // PB1
 #define pin_MCP_CS2 10 // PB2

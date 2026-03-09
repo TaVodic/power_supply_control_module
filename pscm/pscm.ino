@@ -35,6 +35,7 @@ struct el_quantity_t {
   volatile uint8_t btn_oldState = 1;
   volatile uint32_t btn_lastMillis = 0;
   volatile mode_t mode = COARSE;
+  uint16_t wiper = 0;
 };
 
 el_quantity_t Voltage = {&ENC_V, VOLTAGE};
@@ -102,13 +103,14 @@ void setup() {
 void loop() {
   dispsniff_poll(&meas_voltage, &meas_current, &meas_power);
   static uint32_t cmillis = 0;
-  if (millis() > 1000 + cmillis) {    
-    Serial.print("V=");
-    Serial.print(meas_voltage);
-    Serial.print("  A=");
-    Serial.print(meas_current);
-    Serial.print("  W=");
-    Serial.println(meas_power);
+  if (millis() > 100 + cmillis) {    
+    Serial.print("M");
+    Serial.write(meas_voltage);
+    Serial.write(meas_current);
+    Serial.write(meas_power);
+    Serial.write(Voltage.wiper);
+    Serial.write(Current.wiper);
+    Serial.print("\r\n");
     cmillis = millis();
   }
 
@@ -164,12 +166,50 @@ void set_el_quantity(el_quantity_t *quantity) {
     Serial.println(wiper);
 #endif
     quantity->old_enc_position = newPosition;
+    quantity->wiper = wiper;
     if (wiper > WIPER_MAX_VAL) {
       MCP_1.DigitalPotSetWiperMax(quantity->mcp_addr);
       MCP_2.DigitalPotSetWiperPosition(quantity->mcp_addr, wiper - 256);
     } else {
       MCP_1.DigitalPotSetWiperPosition(quantity->mcp_addr, wiper);
       MCP_2.DigitalPotSetWiperMin(quantity->mcp_addr);
+    }
+  }
+}
+
+void UART_handler(void) {
+  while (Serial.available() > 0) {
+    static char receivedMessage[SER_BUFF_SIZE];
+    static char *p_receivedMessage;
+    if (p_receivedMessage == NULL) p_receivedMessage = receivedMessage;
+
+    char receivedChar = Serial.read();
+    // Serial.print(receivedChar);
+    if (receivedChar == '\n') {
+      // Serial.println(receivedMessage);  // Print the received message in the Serial monitor
+      *(++p_receivedMessage) = '\0';
+      // Serial.printf("Received msg: %s\r\n", receivedMessage);
+
+      const char commandPrefix[] = "cmd:";
+      char *p_index = strstr(receivedMessage, commandPrefix);
+      if (p_index != NULL) {
+        p_index = (p_index + sizeof(commandPrefix) - 1);
+        // Serial.printf("Command: %s\n", p_index);
+        // TODO: Parse the msg
+      }
+
+      memset(receivedMessage, 0, sizeof(receivedMessage));  // TODO: teoreticly can be ommited
+      p_receivedMessage = NULL;
+    } else {
+      *p_receivedMessage = receivedChar;  // Append characters to the received message
+      p_receivedMessage++;
+      if ((p_receivedMessage - &receivedMessage[0]) > sizeof(receivedMessage)) {
+        Serial.printf("ERROR: Recieved message larger than expected!\r\n");
+        while (Serial.available() > 0) Serial.read();
+        memset(receivedMessage, 0, sizeof(receivedMessage));  // TODO: teoreticly can be ommited
+        p_receivedMessage = NULL;
+        return;
+      }
     }
   }
 }
