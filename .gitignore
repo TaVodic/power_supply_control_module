@@ -44,3 +44,6 @@ fp-info-cache
 build/
 .venv/
 data/
+__pycache__/
+**/__pycache__/
+*.py[cod]

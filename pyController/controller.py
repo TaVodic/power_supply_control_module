@@ -82,7 +82,7 @@ class PSUApp:
             bg="#111111",
             font=("Segoe UI", 12, "bold")
         ).pack(pady=(0, 8))
-        tk.Entry(
+        self.current_entry = tk.Entry(
             right_input,
             textvariable=self.input_current_var,
             justify="center",
@@ -91,7 +91,10 @@ class PSUApp:
             validatecommand=num_vcmd,
             bg="#2a2a2a",
             fg="#f0f0f0"   
-        ).pack(ipady=8, fill="x", padx=8)
+        )
+        self.current_entry.pack(ipady=8, fill="x", padx=8)
+        self.current_entry.bind("<Return>", self.send_current_input)
+        self.current_entry.bind("<KP_Enter>", self.send_current_input)
         
         left_input = tk.Frame(input_row, bg="#111111")
         left_input.pack(side="left", expand=True, fill="x", padx=(0, 10))
@@ -102,7 +105,7 @@ class PSUApp:
             bg="#111111",
             font=("Segoe UI", 12, "bold")
         ).pack(pady=(0, 8))
-        tk.Entry(
+        self.voltage_entry = tk.Entry(
             left_input,
             textvariable=self.input_voltage_var,
             justify="center",
@@ -111,7 +114,10 @@ class PSUApp:
             validatecommand=num_vcmd,
             bg="#2a2a2a",
             fg="#f0f0f0"            
-        ).pack(ipady=8, fill="x", padx=8)
+        )
+        self.voltage_entry.pack(ipady=8, fill="x", padx=8)
+        self.voltage_entry.bind("<Return>", self.send_voltage_input)
+        self.voltage_entry.bind("<KP_Enter>", self.send_voltage_input)
         
         wiper_row = tk.Frame(bottom, bg="#111111")
         wiper_row.pack(fill="x", pady=(10, 0))
@@ -213,6 +219,35 @@ class PSUApp:
         if value.count(".") > 1:
             return False
         return value.replace(".", "", 1).isdigit()
+
+    def send_current_input(self, event=None):
+        self.send_input_value(self.input_current_var.get(), "c:")
+        return "break"
+
+    def send_voltage_input(self, event=None):
+        self.send_input_value(self.input_voltage_var.get(), "v:")
+        return "break"
+
+    def send_input_value(self, raw_value, cmd):
+        value = raw_value.strip()
+        if not value:
+            return
+
+        try:
+            float(value)
+        except ValueError:
+            messagebox.showwarning("Invalid value", "Please enter a valid number.")
+            return
+
+        if not (self.running and self.ser and self.ser.is_open):
+            messagebox.showwarning("Not connected", "Please connect to a COM port first.")
+            return
+
+        try:
+            self.ser.write(f"{cmd}{value}\n".encode("ascii"))
+        except Exception as e:
+            messagebox.showerror("Send error", str(e))
+            self.disconnect()
 
     def read_loop(self):
         while self.running and self.ser:
